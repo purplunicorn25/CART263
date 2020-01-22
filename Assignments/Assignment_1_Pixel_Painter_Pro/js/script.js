@@ -15,10 +15,23 @@ A small DOM-based program for "painting" on div-based pixels.
 const NUM_PIXELS = 1000;
 const PIXEL_REVERT_DELAY = 1000;
 const DEFAULT_COLOR = "yellow";
-const PAINT_COLOR = "white";
 
 // Set up our starting function for when the page loads
 window.addEventListener("load", setup);
+
+// TYPED
+// Add an empty string to store values in
+let currentKey = "";
+// Add a keydown handler to the new element
+// Set the current keyCode to the keyCode of the key just pressed
+document.addEventListener("keydown", event => {
+  currentKey = event.keyCode;
+});
+
+// ROTATE
+let rotation = 0;
+// Add a keydown handler to the document
+document.addEventListener("keydown", rotate);
 
 // setup
 //
@@ -26,17 +39,17 @@ window.addEventListener("load", setup);
 // then to change color on mouseover.
 function setup() {
   // A loop that runs once per pixel we need
-  for (let i = 0; i < 1000; i++) {
+  for (let i = 0; i < NUM_PIXELS; i++) {
     // Create a DIV and store it in a variable
     let pixel = document.createElement("div");
     // Add the 'pixel' class to the new element
     pixel.setAttribute("class", "pixel");
     // Add a mouseover handler to the new element
-    document.addEventListener("mouseover", paint);
+    pixel.addEventListener("mouseover", paint);
     // Add a click handler to the new element
-    document.addEventListener("click", remove);
-    // Add a keydown handler to the new element
-    document.addEventListener("keydown", rotate);
+    pixel.addEventListener("click", remove);
+    // Add a mouseover handler to the new element
+    pixel.addEventListener("mouseover", addText);
     // Add the element to the body of the page
     document.body.appendChild(pixel);
   }
@@ -59,7 +72,7 @@ function paint(e) {
   // Set a timeout to call the reset function after a delay
   // When we pass additional parameters (like 'pixel' below) they
   // are passed to the callback function (resetPixel)
-  setTimeout(resetPixel, 1000, pixel);
+  setTimeout(resetPixel, PIXEL_REVERT_DELAY, pixel);
 }
 
 // remove
@@ -79,17 +92,36 @@ function remove(e) {
 // Called by the keydown event handler on each pixel. Rotates
 // the pixel by 1 degree.
 function rotate(e) {
+  // Group all the pixels in one array
+  let pixels = document.getElementsByClassName("pixel");
+  // e.target contains the specific elements moused over so let's
+  // save that into a variable for clarity.
+  // pixels = e.target;
+  // Rotate all the pixels by 1 degree at every event
+  // Counter-clockwise when left arrow is pressed
+  if (event.keyCode === 37) {
+    rotation -= 1;
+    for (let i = 0; i < NUM_PIXELS; i++) {
+      pixels[i].style.transform = "rotate(" + rotation + "deg)";
+    }
+    // Clockwise when right arrow is pressed
+  } else if (event.keyCode === 39) {
+    rotation += 1;
+    for (let i = 0; i < NUM_PIXELS; i++) {
+      pixels[i].style.transform = "rotate(" + rotation + "deg)";
+    }
+  }
+}
+
+// addText
+//
+// Called by the mouseover event handler on each pixel. Adds
+// the currentKey as texts to the currently mouse over pixel in use.
+function addText(e) {
   // e.target contains the specific element moused over so let's
   // save that into a variable for clarity.
   let pixel = e.target;
-  // Rotate the pixel by 1 degree at every event
-  // Counter-clockwise when left arrow is pressed
-  if (event.keyCode === 37) {
-    pixel.style.transform += "rotate(-1deg)";
-    // Clockwise when right arrow is pressed
-  } else if (event.keyCode === 39) {
-    pixel.style.transform += "rotate(1deg)";
-  }
+  pixel.innerHTML = currentKey;
 }
 
 // resetPixel
