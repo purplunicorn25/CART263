@@ -1,11 +1,15 @@
 body {
-  background-color: black;
+  background-color: fuchsia;
 }
 
 .pixel {
-  background-color: yellow;
+  background-color: fuchsia;
   width: 30px;
   height: 30px;
+  font-family: "Rubik", sans-serif;
+  line-height: 30px;
+  text-align: center;
+  color: fuchsia;
   float: left;
   display: block;
 }
