@@ -2,32 +2,66 @@
 
 /********************************************************************
 
-Pixel Painter
+Pixel Painter Pro
 Anne Boutet
+&
+Pippin Barr (comments) :) 
 
-This is a template. Fill in the title, author, and this description
-to match your project! Write JavaScript to do amazing things below.
+A small DOM-based program for "painting" on div-based pixels.
 
 *********************************************************************/
 
+// Constants
+const NUM_PIXELS = 1000;
+const PIXEL_REVERT_DELAY = 1000;
+const DEFAULT_COLOR = 'yellow';
+const PAINT_COLOR = 'white';
+
+// Set up our starting function for when the page loads
 window.addEventListener('load', setup);
 
+// setup
+//
+// Adds DIVs to the page along with event listeners that will allow
+// then to change color on mouseover.
 function setup() {
+    // A loop that runs once per pixel we need
     for (let i = 0; i < 1000; i++) {
+    // Create a DIV and store it in a variable
     let pixel = document.createElement('div');
+    // Add the 'pixel' class to the new element
     pixel.setAttribute('class', 'pixel');
+    // Add a mouseover handler to the new element
+      document.addEventListener('mouseover', paint);
+     // Add the element to the body of the page
     document.body.appendChild(pixel);
   }
-  document.addEventListener('mouseover', paint);
 }
 
+// paint
+//
+// Called by the mouseover event handler on each pixel. Changes
+// the pixel's color and sets a timer for it to revert
 function paint(e) {
+  // e.target contains the specific element moused over so let's
+  // save that into a variable for clarity.
   let pixel = e.target;
-  pixel.style.backgroundColor = 'blue';
+  // Change the background color values randomly
+  let r = Math.random() * 255;
+  let g = Math.random() * 10;
+  let b = Math.random() * 255;
+  // Apply these change to the pixel
+  pixel.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
+  // Set a timeout to call the reset function after a delay
+  // When we pass additional parameters (like 'pixel' below) they
+  // are passed to the callback function (resetPixel)
   setTimeout(resetPixel, 1000, pixel);
 
 }
 
+// resetPixel
+//
+// Takes the provided pixel element and sets its color back to default
 function resetPixel(pixel) {
-  pixel.style.backgroundColor = 'yellow';
+  pixel.style.backgroundColor = DEFAULT_COLOR;
 }
