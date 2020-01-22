@@ -35,6 +35,8 @@ function setup() {
     document.addEventListener("mouseover", paint);
     // Add a click handler to the new element
     document.addEventListener("click", remove);
+    // Add a keydown handler to the new element
+    document.addEventListener("keydown", rotate);
     // Add the element to the body of the page
     document.body.appendChild(pixel);
   }
@@ -72,6 +74,23 @@ function remove(e) {
   pixel.style.opacity = "0";
 }
 
+// rotate
+//
+// Called by the keydown event handler on each pixel. Rotates
+// the pixel by 1 degree.
+function rotate(e) {
+  // e.target contains the specific element moused over so let's
+  // save that into a variable for clarity.
+  let pixel = e.target;
+  // Rotate the pixel by 1 degree at every event
+  // Counter-clockwise when left arrow is pressed
+  if (event.keyCode === 37) {
+    pixel.style.transform += "rotate(-1deg)";
+    // Clockwise when right arrow is pressed
+  } else if (event.keyCode === 39) {
+    pixel.style.transform += "rotate(1deg)";
+  }
+}
 
 // resetPixel
 //
