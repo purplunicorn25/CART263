@@ -1,0 +1,20 @@
+body {
+  width: 600px;
+  margin: 0 auto;
+  margin-top: 100px;
+  font-family: Courier, monospace;
+  font-style: oblique;
+  font-size: 12px;
+  padding: 30px;
+}
+
+.redacted {
+  background-color: black;
+  color: transparent;
+  user-select: none;
+}
+
+.revealed {
+  background-color: transparent;
+  color: red;
+}
