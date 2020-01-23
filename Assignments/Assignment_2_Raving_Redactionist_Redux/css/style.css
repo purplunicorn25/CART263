@@ -6,6 +6,7 @@ body {
   font-style: oblique;
   font-size: 12px;
   padding: 30px;
+  text-align: justify;
 }
 
 .redacted {
@@ -21,7 +22,7 @@ body {
 
 .secretReported {
   font-family: Arial, monospace;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .found {
