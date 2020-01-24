@@ -25,6 +25,11 @@ body {
   font-size: 18px;
 }
 
+.secretReportedCounter {
+  font-family: Arial, monospace;
+  font-size: 18px;
+}
+
 .found {
   background-color: deepPink;
 }

@@ -15,9 +15,9 @@ to match your project! Write JavaScript to do amazing things below!
 const REVEAL_PROBABILITY = 0.1;
 const INTERVAL_DURATION = 300;
 
-// Text component that does not want to stay hidden
+// Text components that does not want to stay hidden
 let $sensitiveContent;
-// Text component that are hidden and waiting to be found
+// Text components that are hidden and waiting to be found
 let $secretFound;
 let $secretTotal;
 
@@ -30,6 +30,10 @@ $(document).ready(setup);
 function setup() {
   // Define all the spans to be refered as $sensitiveContent
   $sensitiveContent = $(".redacted");
+  // Count how many spans are secret
+  $secretTotal = $(".secret").length;
+  // Set to the appropriate span on the page
+  $(".secretReportedCounter").text($secretTotal);
   // Set an interval for the $sensitiveContent to go from visible to hidden
   setInterval(update, INTERVAL_DURATION);
   // Check if the element is clicked by the user
