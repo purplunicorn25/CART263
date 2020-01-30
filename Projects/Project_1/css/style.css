@@ -1,3 +1,60 @@
 body {
+  margin: 0px;
+  background-color: grey;
+}
 
+.truck {
+  background-color: red;
+  width: 20%;
+  height: 60%;
+  display: block;
+  position: absolute;
+  bottom: 10%;
+  text-align: center;
+}
+
+.box {
+  background-color: brown;
+  width: 12%;
+  height: 20%;
+  display: block;
+  position: absolute;
+  left: 42.5%;
+  bottom: 5%;
+  text-align: center;
+}
+
+.bookshelf {
+  background-color: #43270F;
+  width: 25%;
+  height: 80%;
+  position: absolute;
+  right: 0;
+  bottom: 10%;
+  display: flex;
+  flex-direction: column;
+  padding: .5%;
+}
+
+.shelf {
+  background-color: #613613;
+  width: 95%;
+  height: 15%;
+  margin: 10px;
+  display: flex;
+  flex-direction: row;
+}
+
+.book {
+  background-color: yellow;
+  width: inherit;
+  margin-top: 3%;
+  margin-left: 1.5%;
+  margin-right: 1.5%;
+  display: block;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  font-size: 7px;
+  text-align: center;
+  padding-right: 2.2%;
 }
