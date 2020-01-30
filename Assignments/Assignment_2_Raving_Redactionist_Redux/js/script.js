@@ -5,9 +5,10 @@
 Activity 3
 Anne Boutet
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-This is a template. Fill in the title, author, and this description
-to match your project! Write JavaScript to do amazing things below!
+The user tries to keep the text hidden by clicking it when it is
+uncovered. The user can also try to find the secret words that are
+hiding in the crowd of words. A counter keeps track of how many are
+left to find. 
 
 *********************************************************************/
 
@@ -27,7 +28,7 @@ $(document).ready(setup);
 
 // setup
 //
-//
+// Handle events and function from the text elements
 function setup() {
   // SENSITIVE CONTENT
   // Define all the spans to be refered as $sensitiveContent
@@ -47,7 +48,7 @@ function setup() {
 
 // update
 //
-//
+// Update the information from the elements in setup
 function update() {
   // Check  for any sensitive content and update their style
   $sensitiveContent.each(updateSensitiveContent);
@@ -57,10 +58,10 @@ function update() {
 
 // updateSensitiveContent
 //
-//
+// Update if the sensitive text is revealed with a random value
 function updateSensitiveContent() {
-  //
-  //
+  // Use a random number in the condition in order to make the behavior
+  // less predictable
   let randomNumber = Math.random();
   if (randomNumber < REVEAL_PROBABILITY) {
     $(this).removeClass("redacted");
@@ -70,21 +71,21 @@ function updateSensitiveContent() {
 
 // sensitiveContentClicked
 //
-//
+// Handle what happens if the sensitive content is clicked
 function sensitiveContentClicked() {
-  //
+  // Switch from hidden to revealed
   $(this).addClass("redacted");
   $(this).removeClass("revealed");
 }
 
 // secretFound
 //
-//
+// Handles the score and the search for secret text
 function secretFound() {
-  //
+  // Change its style to make it look invisible
   $(this).addClass("found");
-  //
+  // Check is the mouse is over the text component
   $(this).off("mouseover", secretFound);
-  //
+  // Adjust counter for the remaining amont of secrets to be found
   $secretTotal -= 1;
 }
