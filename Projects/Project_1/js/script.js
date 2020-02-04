@@ -134,11 +134,3 @@ function bookColor() {
   // Apply this random fill to the books
   $book.css("background-color", `rgb(${r}, ${g}, ${b})`);
 }
-
-// truckMotor
-//
-// Make it look like the motor of the truck is on
-// with vertical movement
-function truckMotor() {
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-}

@@ -11,6 +11,8 @@ body {
   position: absolute;
   bottom: 10%;
   text-align: center;
+  animation: shake 0.5s;
+  animation-iteration-count: infinite;
 }
 
 .box {
@@ -86,4 +88,37 @@ button:hover {
   color: white;
   padding: 8px;
   font-size: 18px;
+}
+
+img:hover {
+  /* Start the shake animation and make the animation last for 0.5 seconds */
+  animation: shake 1.5s;
+  /* When the animation is finished, start again */
+  animation-iteration-count: infinite;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(0, 1.5px);
+  }
+
+  20% {
+    transform: translate(0, 0px);
+  }
+
+  40% {
+    transform: translate(0, -1.5px);
+  }
+
+  60% {
+    transform: translate(0, 1.5px);
+  }
+
+  80% {
+    transform: translate(0, -1.5px);
+  }
+
+  100% {
+    transform: translate(0, 0px);
+  }
 }
