@@ -59,3 +59,20 @@ body {
   padding-right: 2.2%;
   user-select: none;
 }
+
+button {
+  display: none;
+  background-color: transparent;
+  position: absolute;
+  left: 60%;
+  bottom: 30%;
+  border: solid;
+  color: white;
+  font-size: 18px;
+  padding: 8px;
+  transition-duration: 0.4s;
+}
+
+button:hover {
+  background-color: magenta;
+}

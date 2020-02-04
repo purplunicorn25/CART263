@@ -23,6 +23,12 @@ let $book;
 // Variables
 let booksIn = 0;
 
+// Buttons
+let $fullBoxButton;
+
+// Images
+let $boxImage;
+
 // Call setup when the page is loaded
 $(document).ready(setup);
 
@@ -30,10 +36,14 @@ $(document).ready(setup);
 //
 // Handle events and function from the text elements
 function setup() {
-  //
+  // Define Objects
   $box = $(".box");
   $truck = $(".truck");
   $book = $(".book");
+  // Define Buttons
+  $fullBoxButton = $("#fullBoxButton");
+  // Define Images
+  $boxImage = $("#boxImage");
   // Make the book fill color random for each book
   $book.each(bookColor); // ????????????????????????????
   //
@@ -74,18 +84,19 @@ function bookColor() {
 //
 //
 function checkBox() {
-  //
+  // If the box is filled, add a button to change
+  // the open box image to a closed box image
   if (booksIn === BOX_FILLED) {
-    console.log("box full");
-    $("button").click(function(event) {
-      event.preventDefault();
+    // Display the button to close the box
+    $fullBoxButton.css("display", "inline-block");
+    // Check if the button is clicked
+    // If so, hide the button and change the image
+    $fullBoxButton.click(function(event, ui) {
+      $fullBoxButton.css("display", "none");
+      $boxImage.attr("src", "assets/images/closedBox.png");
     });
   }
 }
-
-$("button, input, a").click(function(event) {
-  event.preventDefault();
-});
 
 // resetBook
 //
