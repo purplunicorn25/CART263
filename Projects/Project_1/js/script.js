@@ -17,6 +17,7 @@ const BOX_FILLED = 1;
 const BOOK_PILE_TOP_POSITION = 500;
 const BOOK_PILE_BOT_POSITION = 0;
 const GRAVITY_TIME = 300;
+const NUMBER_BOOKSHELVES = 6;
 
 // jQuery Variables
 let $box;
@@ -25,7 +26,7 @@ let $book;
 
 // Variables
 let booksIn = 0;
-let bookTop;
+let initialBoxBot;
 
 // Buttons & Instructions
 let $fullBoxButton;
@@ -72,6 +73,8 @@ function setup() {
   $box.droppable({
     drop: onDrop
   });
+  // Record the original position of the box
+  initialBoxBot = document.getElementById("boxImage").getBoundingClientRect().top;
 }
 
 // onDrop
@@ -171,7 +174,7 @@ function reset() {
     $resetButton.css("display", "none");
     // Reset box image, position and function
     $boxImage.attr("src", "assets/images/box.png");
-    $boxImage.css("top", bookTop + "px");
+    $boxImage.css("top", initialBoxBot + "px");
     $box.droppable("enable");
     // Reset book pile position
     $bookPile.css("top", "300px");
@@ -199,88 +202,25 @@ function bookColor() {
   })
 }
 
-// resetBookPositions
-//
 // Empty the bookshelf and refill it again
 function resetBookPositions() {
   // Empty the bookshelf
   $(".bookshelf").empty();
-  // Create new books
-  let bookStructure =
-    '<div class="shelf">' +
-    '<div class="book">To Kill A Mockingbird</div>' +
-    '<div class="book">Wuttering Heights</div>' +
-    '<div class="book">Little Women</div>' +
-    '<div class="book">Lord of the Flies</div>' +
-    '<div class="book">Pride & Prejudice</div>' +
-    '<div class="book">Harry Potter</div>' +
-    '<div class="book">Da Vinci Code</div>' +
-    '<div class="book">Sherlock Holmes</div>' +
-    '<div class="book">Oscar Wilde</div>' +
-    '<div class="book">Angela\'s Ashes</div>' +
-    '</div>' +
-    '<div class="shelf">' +
-    '<div class="book">To Kill A Mockingbird</div>' +
-    '<div class="book">Wuttering Heights</div>' +
-    '<div class="book">Little Women</div>' +
-    '<div class="book">Lord of the Flies</div>' +
-    '<div class="book">Pride & Prejudice</div>' +
-    '<div class="book">Harry Potter</div>' +
-    '<div class="book">Da Vinci Code</div>' +
-    '<div class="book">Sherlock Holmes</div>' +
-    '<div class="book">Oscar Wilde</div>' +
-    '<div class="book">Angela\'s Ashes</div>' +
-    '</div>' +
-    '<div class="shelf">' +
-    '<div class="book">To Kill A Mockingbird</div>' +
-    '<div class="book">Wuttering Heights</div>' +
-    '<div class="book">Little Women</div>' +
-    '<div class="book">Lord of the Flies</div>' +
-    '<div class="book">Pride & Prejudice</div>' +
-    '<div class="book">Harry Potter</div>' +
-    '<div class="book">Da Vinci Code</div>' +
-    '<div class="book">Sherlock Holmes</div>' +
-    '<div class="book">Oscar Wilde</div>' +
-    '<div class="book">Angela\'s Ashes</div>' +
-    '</div>' +
-    '<div class="shelf">' +
-    '<div class="book">To Kill A Mockingbird</div>' +
-    '<div class="book">Wuttering Heights</div>' +
-    '<div class="book">Little Women</div>' +
-    '<div class="book">Lord of the Flies</div>' +
-    '<div class="book">Pride & Prejudice</div>' +
-    '<div class="book">Harry Potter</div>' +
-    '<div class="book">Da Vinci Code</div>' +
-    '<div class="book">Sherlock Holmes</div>' +
-    '<div class="book">Oscar Wilde</div>' +
-    '<div class="book">Angela\'s Ashes</div>' +
-    '</div>' +
-    '<div class="shelf">' +
-    '<div class="book">To Kill A Mockingbird</div>' +
-    '<div class="book">Wuttering Heights</div>' +
-    '<div class="book">Little Women</div>' +
-    '<div class="book">Lord of the Flies</div>' +
-    '<div class="book">Pride & Prejudice</div>' +
-    '<div class="book">Harry Potter</div>' +
-    '<div class="book">Da Vinci Code</div>' +
-    '<div class="book">Sherlock Holmes</div>' +
-    '<div class="book">Oscar Wilde</div>' +
-    '<div class="book">Angela\'s Ashes</div>' +
-    '</div>' +
-    '<div class="shelf">' +
-    '<div class="book">To Kill A Mockingbird</div>' +
-    '<div class="book">Wuttering Heights</div>' +
-    '<div class="book">Little Women</div>' +
-    '<div class="book">Lord of the Flies</div>' +
-    '<div class="book">Pride & Prejudice</div>' +
-    '<div class="book">Harry Potter</div>' +
-    '<div class="book">Da Vinci Code</div>' +
-    '<div class="book">Sherlock Holmes</div>' +
-    '<div class="book">Oscar Wilde</div>' +
-    '<div class="book">Angela\'s Ashes</div>' +
-    '</div>';
-  // Put the new books on the shelves
-  $(".bookshelf").append(bookStructure);
+  // Create an array of the book titles used in html
+  let bookTitles = ["To Kill A Mockingbird", "Wuttering Heights", "Little Women", "Lord of the Flies", "Pride & Prejudice", +
+    "Harry Potter", "Da Vinci Code", "Sherlock Holmes", "Oscar Wilde", "Angela's Ashes"
+  ];
+  // Create shelves
+  for (let i = 0; i < NUMBER_BOOKSHELVES; i++) {
+    let shelf = $('<div class="shelf">');
+    // Add the shelves to the bookshelf
+    $(".bookshelf").append(shelf);
+    // For all shelves, add 10 books
+    for (let i = 0; i < bookTitles.length; i++) {
+      let book = $('<div class="book">' + bookTitles[i] + '</div>');
+      $(shelf).append(book);
+    }
+  }
   // Make sure that they are recognize by the program
   $book = $(".book");
   // Make the books draggable objects again
