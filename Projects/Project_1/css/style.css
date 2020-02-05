@@ -4,7 +4,6 @@ body {
 }
 
 .truck {
-  width: 20%;
   height: 60%;
   display: block;
   position: absolute;
@@ -89,7 +88,18 @@ button:hover {
   background-color: transparent;
   position: absolute;
   left: 60%;
-  bottom: 30%;
+  bottom: 50%;
+  color: white;
+  padding: 8px;
+  font-size: 18px;
+}
+
+#decoyInstruction {
+  display: none;
+  background-color: transparent;
+  position: absolute;
+  left: 45%;
+  bottom: 65%;
   color: white;
   padding: 8px;
   font-size: 18px;

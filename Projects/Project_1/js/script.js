@@ -25,11 +25,13 @@ let $book;
 
 // Variables
 let booksIn = 0;
+let bookTop;
 
 // Buttons & Instructions
 let $fullBoxButton;
 let $resetButton;
 let $liftInstruction;
+let $decoyInstruction;
 
 // Images
 let $boxImage;
@@ -51,17 +53,20 @@ function setup() {
   $fullBoxButton = $("#fullBoxButton");
   $resetButton = $("#resetButton");
   $liftInstruction = $("#liftInstruction");
+  $decoyInstruction = $("#decoyInstruction");
 
   // Define Images
   $boxImage = $("#boxImage");
   $bookPile = $(".bookPile");
 
   // Make the book fill color random for each book
-  $book.each(bookColor); // ????????????????????????????
+  bookColor();
+
   // Make the books draggable objects
   $book.draggable({
     revert: true
   });
+
   // Make the box a droppable object
   // Add a function to handle its reactions
   $box.droppable({
@@ -71,7 +76,7 @@ function setup() {
 
 // onDrop
 //
-//
+// Handles when the book are dropped in the box
 function onDrop(event, ui) {
   // Drop the book in the box and use a scale effect
   // to make it look like its going in
@@ -84,7 +89,7 @@ function onDrop(event, ui) {
 
 // checkBox
 //
-//
+// Check if the box is full, close it
 function checkBox() {
   // If the box is filled, add a button to change
   // the open box image to a closed box image
@@ -106,10 +111,11 @@ function checkBox() {
 
 // liftBox
 //
-//
+// Handles when the user drags the box up
 function liftBox() {
   // Display instruction for the next step
   $liftInstruction.css("display", "block");
+  $decoyInstruction.css("display", "block");
   // Drag the box up vertically, constrain to a certain height
   // Can only be dragged once, when dragged call brokenBox
   $box.draggable({
@@ -118,15 +124,20 @@ function liftBox() {
     containment: [0, 300, 0, 500],
     stop: function() {
       $(this).draggable('disable');
+      // Remove Instructions
       $liftInstruction.css("display", "none");
+      $decoyInstruction.css("display", "none");
+      // Call the function when the box is lifted
       brokenBox();
     }
   });
+  // Enable the draggable so that the loop is complete
+  $box.draggable('enable');
 }
 
 // brokenBox
 //
-//
+// Make the books fall from the box
 function brokenBox() {
   // Display the image of the book pile behind the box
   $bookPile.css("display", "block");
@@ -142,13 +153,14 @@ function brokenBox() {
       bottom: BOOK_PILE_BOT_POSITION
     });
   });
-  resetBook();
+  // Reset all the elements to start again
+  reset();
 }
 
-// resetBook
+// reset
 //
-//
-function resetBook() {
+// Reset the game in order to start again
+function reset() {
   // Display the button to reset the books
   $resetButton.css("display", "inline-block");
   // Check if the button is clicked
@@ -159,12 +171,14 @@ function resetBook() {
     $resetButton.css("display", "none");
     // Reset box image, position and function
     $boxImage.attr("src", "assets/images/box.png");
-    $boxImage.css("bottom", "100px"); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    $boxImage.css("top", bookTop + "px");
     $box.droppable("enable");
     // Reset book pile position
     $bookPile.css("top", "300px");
     // Remove book pile image
     $bookPile.css("display", "none");
+    // Reset book position
+    resetBookPositions();
     // Reset book counter
     booksIn = 0;
   });
@@ -174,10 +188,105 @@ function resetBook() {
 //
 // Make the fill color of the books random
 function bookColor() {
-  // Change the color based on a RGB color system
-  let r = Math.random() * 255;
-  let g = Math.random() * 10;
-  let b = Math.random() * 255;
-  // Apply this random fill to the books
-  $book.css("background-color", `rgb(${r}, ${g}, ${b})`);
+  // Change the color of each book
+  $book.each(function(index, element) {
+    // Change the color based on a RGB color system
+    let r = Math.random() * 255;
+    let g = Math.random() * 10;
+    let b = Math.random() * 255;
+    // Apply this random fill to the books
+    $(element).css("background-color", `rgb(${r}, ${g}, ${b})`);
+  })
+}
+
+// resetBookPositions
+//
+// Empty the bookshelf and refill it again
+function resetBookPositions() {
+  // Empty the bookshelf
+  $(".bookshelf").empty();
+  // Create new books
+  let bookStructure =
+    '<div class="shelf">' +
+    '<div class="book">To Kill A Mockingbird</div>' +
+    '<div class="book">Wuttering Heights</div>' +
+    '<div class="book">Little Women</div>' +
+    '<div class="book">Lord of the Flies</div>' +
+    '<div class="book">Pride & Prejudice</div>' +
+    '<div class="book">Harry Potter</div>' +
+    '<div class="book">Da Vinci Code</div>' +
+    '<div class="book">Sherlock Holmes</div>' +
+    '<div class="book">Oscar Wilde</div>' +
+    '<div class="book">Angela\'s Ashes</div>' +
+    '</div>' +
+    '<div class="shelf">' +
+    '<div class="book">To Kill A Mockingbird</div>' +
+    '<div class="book">Wuttering Heights</div>' +
+    '<div class="book">Little Women</div>' +
+    '<div class="book">Lord of the Flies</div>' +
+    '<div class="book">Pride & Prejudice</div>' +
+    '<div class="book">Harry Potter</div>' +
+    '<div class="book">Da Vinci Code</div>' +
+    '<div class="book">Sherlock Holmes</div>' +
+    '<div class="book">Oscar Wilde</div>' +
+    '<div class="book">Angela\'s Ashes</div>' +
+    '</div>' +
+    '<div class="shelf">' +
+    '<div class="book">To Kill A Mockingbird</div>' +
+    '<div class="book">Wuttering Heights</div>' +
+    '<div class="book">Little Women</div>' +
+    '<div class="book">Lord of the Flies</div>' +
+    '<div class="book">Pride & Prejudice</div>' +
+    '<div class="book">Harry Potter</div>' +
+    '<div class="book">Da Vinci Code</div>' +
+    '<div class="book">Sherlock Holmes</div>' +
+    '<div class="book">Oscar Wilde</div>' +
+    '<div class="book">Angela\'s Ashes</div>' +
+    '</div>' +
+    '<div class="shelf">' +
+    '<div class="book">To Kill A Mockingbird</div>' +
+    '<div class="book">Wuttering Heights</div>' +
+    '<div class="book">Little Women</div>' +
+    '<div class="book">Lord of the Flies</div>' +
+    '<div class="book">Pride & Prejudice</div>' +
+    '<div class="book">Harry Potter</div>' +
+    '<div class="book">Da Vinci Code</div>' +
+    '<div class="book">Sherlock Holmes</div>' +
+    '<div class="book">Oscar Wilde</div>' +
+    '<div class="book">Angela\'s Ashes</div>' +
+    '</div>' +
+    '<div class="shelf">' +
+    '<div class="book">To Kill A Mockingbird</div>' +
+    '<div class="book">Wuttering Heights</div>' +
+    '<div class="book">Little Women</div>' +
+    '<div class="book">Lord of the Flies</div>' +
+    '<div class="book">Pride & Prejudice</div>' +
+    '<div class="book">Harry Potter</div>' +
+    '<div class="book">Da Vinci Code</div>' +
+    '<div class="book">Sherlock Holmes</div>' +
+    '<div class="book">Oscar Wilde</div>' +
+    '<div class="book">Angela\'s Ashes</div>' +
+    '</div>' +
+    '<div class="shelf">' +
+    '<div class="book">To Kill A Mockingbird</div>' +
+    '<div class="book">Wuttering Heights</div>' +
+    '<div class="book">Little Women</div>' +
+    '<div class="book">Lord of the Flies</div>' +
+    '<div class="book">Pride & Prejudice</div>' +
+    '<div class="book">Harry Potter</div>' +
+    '<div class="book">Da Vinci Code</div>' +
+    '<div class="book">Sherlock Holmes</div>' +
+    '<div class="book">Oscar Wilde</div>' +
+    '<div class="book">Angela\'s Ashes</div>' +
+    '</div>';
+  // Put the new books on the shelves
+  $(".bookshelf").append(bookStructure);
+  // Make sure that they are recognize by the program
+  $book = $(".book");
+  // Make the books draggable objects again
+  $book.draggable({
+    revert: true
+  });
+  // Apply the color to the new books
+  bookColor();
 }
