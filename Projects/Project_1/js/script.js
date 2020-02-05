@@ -14,6 +14,9 @@ game is an endless loop of failure inspired from the myth of Sysiphus.
 
 // Constants
 const BOX_FILLED = 1;
+const BOOK_PILE_TOP_POSITION = 500;
+const BOOK_PILE_BOT_POSITION = 0;
+const GRAVITY_TIME = 300;
 
 // jQuery Variables
 let $box;
@@ -25,10 +28,12 @@ let booksIn = 0;
 
 // Buttons & Instructions
 let $fullBoxButton;
+let $resetButton;
 let $liftInstruction;
 
 // Images
 let $boxImage;
+let $bookPile;
 
 // Call setup when the page is loaded
 $(document).ready(setup);
@@ -41,19 +46,26 @@ function setup() {
   $box = $(".box");
   $truck = $(".truck");
   $book = $(".book");
+
   // Define Buttons & Instructions
   $fullBoxButton = $("#fullBoxButton");
+  $resetButton = $("#resetButton");
   $liftInstruction = $("#liftInstruction");
+
   // Define Images
   $boxImage = $("#boxImage");
+  $bookPile = $(".bookPile");
+
   // Make the book fill color random for each book
   $book.each(bookColor); // ????????????????????????????
   // Make the books draggable objects
-  $book.draggable();
+  $book.draggable({
+    revert: true
+  });
   // Make the box a droppable object
   // Add a function to handle its reactions
   $box.droppable({
-    drop: onDrop,
+    drop: onDrop
   });
 }
 
@@ -77,6 +89,8 @@ function checkBox() {
   // If the box is filled, add a button to change
   // the open box image to a closed box image
   if (booksIn === BOX_FILLED) {
+    // You can't had more books
+    $box.droppable("disable");
     // Display the button to close the box
     $fullBoxButton.css("display", "inline-block");
     // Check if the button is clicked
@@ -101,9 +115,10 @@ function liftBox() {
   $box.draggable({
     axis: "y",
     cursor: "move",
-    containment: [0, 200, 0, 300],
+    containment: [0, 300, 0, 500],
     stop: function() {
       $(this).draggable('disable');
+      $liftInstruction.css("display", "none");
       brokenBox();
     }
   });
@@ -113,14 +128,46 @@ function liftBox() {
 //
 //
 function brokenBox() {
-  console.log("brokenBox");
+  // Display the image of the book pile behind the box
+  $bookPile.css("display", "block");
+  // Change the box image to a broken box
+  $boxImage.attr("src", "assets/images/brokenBox.gif");
+  // Source:
+  // https://stackoverflow.com/questions/8518400/jquery-animate-from-css-top-to-bottom
+  // Move the book pile down.
+  $bookPile.animate({
+    top: BOOK_PILE_TOP_POSITION
+  }, GRAVITY_TIME, function() {
+    $bookPile.css({
+      bottom: BOOK_PILE_BOT_POSITION
+    });
+  });
+  resetBook();
 }
 
 // resetBook
 //
 //
 function resetBook() {
-
+  // Display the button to reset the books
+  $resetButton.css("display", "inline-block");
+  // Check if the button is clicked
+  // If so, hide the button and reset the books position,
+  // the box image, book counter, and the book pile
+  $resetButton.click(function(event, ui) {
+    // Hide button once clicked
+    $resetButton.css("display", "none");
+    // Reset box image, position and function
+    $boxImage.attr("src", "assets/images/box.png");
+    $boxImage.css("bottom", "100px"); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    $box.droppable("enable");
+    // Reset book pile position
+    $bookPile.css("top", "300px");
+    // Remove book pile image
+    $bookPile.css("display", "none");
+    // Reset book counter
+    booksIn = 0;
+  });
 }
 
 // bookColor
