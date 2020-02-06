@@ -18,6 +18,7 @@ const BOOK_PILE_TOP_POSITION = 500;
 const BOOK_PILE_BOT_POSITION = 0;
 const GRAVITY_TIME = 300;
 const NUMBER_BOOKSHELVES = 6;
+const NUMBER_BOOKS_ON_SHELF = 10;
 
 // jQuery Variables
 let $box;
@@ -60,8 +61,8 @@ function setup() {
   $boxImage = $("#boxImage");
   $bookPile = $(".bookPile");
 
-  // Make the book fill color random for each book
-  bookColor();
+  // Create book that fill the bookshelf
+  createBooks();
 
   // Make the books draggable objects
   $book.draggable({
@@ -202,22 +203,30 @@ function bookColor() {
   })
 }
 
-// Empty the bookshelf and refill it again
-function resetBookPositions() {
-  // Empty the bookshelf
-  $(".bookshelf").empty();
+// createBooks
+//
+// Create books objects on the shelves
+function createBooks() {
   // Create an array of the book titles used in html
-  let bookTitles = ["To Kill A Mockingbird", "Wuttering Heights", "Little Women", "Lord of the Flies", "Pride & Prejudice", +
-    "Harry Potter", "Da Vinci Code", "Sherlock Holmes", "Oscar Wilde", "Angela's Ashes"
+  let bookTitles = ["To Kill A Mockingbird", "Wuthering Heights", "Little Women", "Lord of the Flies", "Pride & Prejudice",
+    "Harry Potter", "Da Vinci Code", "Sherlock Holmes", "Oscar Wilde", "Angela's Ashes", "Jane Eyre", "Beloved", "Ulysses",
+    "Don Quixote", "The Great Gatsby", "Moby Dick", "War and Peace", "Lolita", "Hamlet", "The Myth of Sysiphus", "Madame Bovary",
+    "Nineteen Eighty Four", "Anna Karenina", "Great Expectations", "Gulliver's Travels", "The Stranger", "The Trial", "Candide",
+    "The Lord of the Rings", "Les Misérables", "The Idiot", "Gone With the Wind", "Emma", "The Age of Innocence", "On the Road",
+    "Animal Farm", "Frankenstein", "Vanity Fair", "Study in Scarlet", "The Scarlet Letter", "The Handmaid's Tale", "Faust",
+    "Les Fleurs du Mal", "Don Juan", "L'École des Femmes", "Antigone", "Robinson Crusoe", "The Book Thief", "Le Parfum",
+    "The Help", "Romeo & Juliette", "Ilyade", "Les Trois Mousquetaires"
   ];
+  console.log(bookTitles);
   // Create shelves
   for (let i = 0; i < NUMBER_BOOKSHELVES; i++) {
     let shelf = $('<div class="shelf">');
     // Add the shelves to the bookshelf
     $(".bookshelf").append(shelf);
     // For all shelves, add 10 books
-    for (let i = 0; i < bookTitles.length; i++) {
-      let book = $('<div class="book">' + bookTitles[i] + '</div>');
+    for (let i = 0; i < NUMBER_BOOKS_ON_SHELF; i++) {
+      let randomBook = Math.floor(Math.random() * bookTitles.length);
+      let book = $('<div class="book">' + bookTitles[randomBook] + '</div>');
       $(shelf).append(book);
     }
   }
@@ -229,4 +238,15 @@ function resetBookPositions() {
   });
   // Apply the color to the new books
   bookColor();
+}
+
+
+// resetBookPositions
+//
+// Empty the bookshelf and refill it again
+function resetBookPositions() {
+  // Empty the bookshelf
+  $(".bookshelf").empty();
+  // Create new books
+  createBooks();
 }
