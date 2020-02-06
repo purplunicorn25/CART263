@@ -125,7 +125,7 @@ function liftBox() {
   $box.draggable({
     axis: "y",
     cursor: "move",
-    containment: [0, 300, 0, 500],
+    containment: [0, 250, 0, 500],
     stop: function() {
       $(this).draggable('disable');
       // Remove Instructions
@@ -146,7 +146,7 @@ function brokenBox() {
   // Display the image of the book pile behind the box
   $bookPile.css("display", "block");
   // Change the box image to a broken box
-  $boxImage.attr("src", "assets/images/brokenBox.gif");
+  $boxImage.attr("src", "assets/images/brokenBox.png");
   // Source:
   // https://stackoverflow.com/questions/8518400/jquery-animate-from-css-top-to-bottom
   // Move the book pile down.
@@ -195,9 +195,9 @@ function bookColor() {
   // Change the color of each book
   $book.each(function(index, element) {
     // Change the color based on a RGB color system
-    let r = Math.random() * 255;
-    let g = Math.random() * 10;
-    let b = Math.random() * 255;
+    let r = Math.random() * 170;
+    let g = Math.random() * 200;
+    let b = Math.random() * 250;
     // Apply this random fill to the books
     $(element).css("background-color", `rgb(${r}, ${g}, ${b})`);
   })
@@ -217,7 +217,6 @@ function createBooks() {
     "Les Fleurs du Mal", "Don Juan", "L'École des Femmes", "Antigone", "Robinson Crusoe", "The Book Thief", "Le Parfum",
     "The Help", "Romeo & Juliette", "Ilyade", "Les Trois Mousquetaires"
   ];
-  console.log(bookTitles);
   // Create shelves
   for (let i = 0; i < NUMBER_BOOKSHELVES; i++) {
     let shelf = $('<div class="shelf">');

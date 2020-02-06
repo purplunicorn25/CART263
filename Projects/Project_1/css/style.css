@@ -3,6 +3,24 @@ body {
   background-color: grey;
 }
 
+h1 {
+  font-family: 'Lobster', cursive;
+  position: absolute;
+  left: 25%;
+  top: 0;
+  font-size: 60px;
+  color: white;
+}
+
+p {
+  font-family: 'Lato', sans-serif;
+  position: absolute;
+  left: 26%;
+  top: 13%;
+  font-size: 20px;
+  color: white;
+}
+
 .truck {
   height: 60%;
   display: block;
@@ -11,6 +29,7 @@ body {
   text-align: center;
   animation: shake 0.5s;
   animation-iteration-count: infinite;
+  height: 700px;
 }
 
 .box {
@@ -18,9 +37,11 @@ body {
   height: 200px;
   display: block;
   position: absolute;
-  left: 42.5%;
+  left: 40%;
   bottom: 50px;
   text-align: center;
+  width: 300px;
+  height: 300px;
 }
 
 .bookshelf {
@@ -29,19 +50,19 @@ body {
   height: 700px;
   position: absolute;
   right: 0;
-  bottom: 0;
+  bottom: 5%;
   display: flex;
   flex-direction: column;
   padding: .5%;
 }
 
 .shelf {
-  background-color: #613613;
   width: 95%;
   height: 15%;
   margin: 10px;
   display: flex;
   flex-direction: row;
+  background-image: linear-gradient(#613613, #43270F);
 }
 
 .book {
@@ -53,16 +74,19 @@ body {
   display: block;
   writing-mode: vertical-rl;
   text-orientation: mixed;
-  font-size: 7px;
+  font-size: 8px;
   text-align: center;
+  font-family: 'Vollkorn', serif;
   padding-right: 2.2%;
   user-select: none;
+  box-shadow: 4px -2px 5px #43270F;
+  color: black;
 }
 
 .bookPile {
   display: none;
   position: absolute;
-  left: 42.5%;
+  left: 43%;
   top: 300px;
 }
 
@@ -70,39 +94,42 @@ button {
   display: none;
   background-color: transparent;
   position: absolute;
-  left: 60%;
+  left: 62%;
   bottom: 30%;
   border: solid;
-  color: white;
+  color: #2E3192;
   font-size: 18px;
-  padding: 8px;
+  padding: 12px;
   transition-duration: 0.4s;
+  font-family: 'Lato', sans-serif;
 }
 
 button:hover {
-  background-color: magenta;
+  background-color: rgb(255, 255, 255, 0.7);
 }
 
 #liftInstruction {
   display: none;
   background-color: transparent;
   position: absolute;
-  left: 60%;
+  left: 62%;
   bottom: 50%;
-  color: white;
+  color: #2E3192;
   padding: 8px;
-  font-size: 18px;
+  font-size: 20px;
+  font-family: 'Lato', sans-serif;
 }
 
 #decoyInstruction {
   display: none;
   background-color: transparent;
   position: absolute;
-  left: 45%;
+  left: 42%;
   bottom: 65%;
-  color: white;
+  color: #2E3192;
   padding: 8px;
-  font-size: 18px;
+  font-size: 20px;
+  font-family: 'Lato', sans-serif;
 }
 
 @keyframes shake {
@@ -129,4 +156,12 @@ button:hover {
   100% {
     transform: translate(0, 0px);
   }
+}
+
+.floor {
+  position: absolute;
+  bottom: 0;
+  background-color: darkgray;
+  width: 100%;
+  height: 200px;
 }
