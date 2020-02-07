@@ -13,7 +13,7 @@ game is an endless loop of failure inspired from the myth of Sysiphus.
 *********************************************************************/
 
 // Constants
-const BOX_FILLED = 1;
+const BOX_FILLED = 20;
 const BOOK_PILE_TOP_POSITION = 500;
 const BOOK_PILE_BOT_POSITION = 0;
 const GRAVITY_TIME = 300;
