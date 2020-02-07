@@ -1,4 +1,4 @@
-# 1 The Myth of Sisyphus: Paper Boxes
+# The Myth of Sisyphus: Paper Boxes
 
 If I could summarize the message of The Myth of Sisyphus in one main idea, it would be: hope is the ultimate human condition and it can survive any hardship. It is hope that give meaning to life, for the faithful it is paradise, for the prisoner it is freedom, and for all it is to live another day. This is when Albert Camus in his essay, The Myth of Sisyphus, brings up the absurdity of suicide. This is from the theme of hope and absurdity that I based my game, Paper Boxes.
 

@@ -35,9 +35,11 @@ let $resetButton;
 let $liftInstruction;
 let $decoyInstruction;
 
-// Images
+// Images & Sounds
 let $boxImage;
 let $bookPile;
+let musicSFX = new Audio("assets/sounds/music.mp3");
+let booksFallingSFX = new Audio("assets/sounds/bookFalling.mp3");
 
 // Call setup when the page is loaded
 $(document).ready(setup);
@@ -46,6 +48,10 @@ $(document).ready(setup);
 //
 // Handle events and function from the text elements
 function setup() {
+  //Play music for ambiance
+  musicSFX.loop = true;
+  musicSFX.play();
+
   // Define Objects
   $box = $(".box");
   $truck = $(".truck");
@@ -147,6 +153,8 @@ function brokenBox() {
   $bookPile.css("display", "block");
   // Change the box image to a broken box
   $boxImage.attr("src", "assets/images/brokenBox.png");
+  // Play the sound of books falling
+  booksFallingSFX.play();
   // Source:
   // https://stackoverflow.com/questions/8518400/jquery-animate-from-css-top-to-bottom
   // Move the book pile down.
