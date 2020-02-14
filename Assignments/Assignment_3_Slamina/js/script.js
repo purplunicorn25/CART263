@@ -174,13 +174,14 @@ $(document).ready(setup);
 //
 // We just start a new round right away!
 function setup() {
-  // 
+  //
   newRound();
   // Make sure annyang is available...
   if (annyang) {
     // Add the commands to annyang.
     var command = {
-      "I *give up": handleUserSpeech
+      "I *give up": handleUserSpeech,
+      "*Say it again": handleHelp
     };
     // Now we've defined the commands we give them to annyang
     // by using its .addCommands() function.
@@ -194,7 +195,19 @@ function setup() {
 //
 //
 function handleUserSpeech() {
-  console.log("I heard you luv");
+  //
+  $correctButton.css({
+    "background-color": "green",
+    "color": "white"
+  });
+  setTimeout(resetRound, 1000);
+}
+
+//
+//
+//
+function handleHelp() {
+
 }
 
 // newRound()
@@ -287,6 +300,16 @@ function handleGuess() {
     // And say the correct animal again to "help" them
     sayBackwards($correctButton.text());
   }
+}
+
+//
+//
+//
+function resetRound() {
+  // Remove all the buttons
+  $('.guess').remove();
+  // Start a new round
+  newRound();
 }
 
 // getRandomElement(array)
