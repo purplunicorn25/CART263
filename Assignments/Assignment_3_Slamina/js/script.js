@@ -191,23 +191,24 @@ function setup() {
   }
 }
 
+// handleUserSpeech
 //
-//
-//
+// Show the correct answer and create a new round
 function handleUserSpeech() {
-  //
+  // Highlight the correct answer
   $correctButton.css({
     "background-color": "green",
     "color": "white"
   });
+  // Create a new round
   setTimeout(resetRound, 1000);
 }
 
+// handleHelp
 //
-//
-//
+// Repeat the reversed name again
 function handleHelp() {
-
+  sayBackwards($correctButton.text())
 }
 
 // newRound()
@@ -257,7 +258,7 @@ function sayBackwards(text) {
 
   // Use ResponsiveVoice to speak the string we generated, with UK English Male voice
   // and the options we just specified.
-  responsiveVoice.speak(backwardsText, 'UK English Male', options);
+  responsiveVoice.speak(backwardsText, 'UK English Male');
 }
 
 // addButton(label)
