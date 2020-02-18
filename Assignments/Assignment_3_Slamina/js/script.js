@@ -181,13 +181,20 @@ function setup() {
     // Add the commands to annyang.
     var command = {
       "I *give up": handleUserSpeech,
-      "*Say it again": handleHelp
+      "*Say it again": handleHelp,
+      "I think it is *answer": check
     };
     // Now we've defined the commands we give them to annyang
     // by using its .addCommands() function.
     annyang.addCommands(command);
     // Finally we tell annyang to start listening
     $(document).one("click", annyang.start);
+  }
+}
+
+function check(answer) {
+  if (answer === $correctButton.text()) {
+    handleUserSpeech();
   }
 }
 
@@ -208,7 +215,7 @@ function handleUserSpeech() {
 //
 // Repeat the reversed name again
 function handleHelp() {
-  sayBackwards($correctButton.text())
+  sayBackwards($correctButton.text());
 }
 
 // newRound()
