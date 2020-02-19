@@ -165,7 +165,9 @@ let $correctButton;
 // We also track the set of buttons
 let buttons = [];
 // How many possible answers there are per round
-const NUM_OPTIONS = 5;
+const NUM_OPTIONS = 15;
+// Keep track of the score
+let score = 0;
 
 // Get setup!
 $(document).ready(setup);
@@ -182,7 +184,7 @@ function setup() {
     var command = {
       "I *give up": handleUserSpeech,
       "*Say it again": handleHelp,
-      "I think it is *answer": check
+      "I think it is *answer": handleAnswer
     };
     // Now we've defined the commands we give them to annyang
     // by using its .addCommands() function.
@@ -192,8 +194,18 @@ function setup() {
   }
 }
 
-function check(answer) {
-  if (answer === $correctButton.text()) {
+// handleAnswer
+//
+// Check if the answer (voice) is the correct answer
+// If not, shake all the buttons and say the word backward again
+function handleAnswer(answer) {
+  // If the player says the wrong answer shake the buttons
+  // If they get it, start a new round
+  if (answer !== $correctButton.text()) {
+    $('.guess').effect('shake');
+    // And say the correct animal again to "help" them
+    sayBackwards($correctButton.text());
+  } else if (answer === $correctButton.text()) {
     handleUserSpeech();
   }
 }
@@ -223,6 +235,7 @@ function handleHelp() {
 // Generates a set of possible answers randomly from the set of animals
 // and adds buttons for each one. Then chooses the correct button randomly.
 function newRound() {
+  console.log(score);
   // We empty the buttons array for the new round
   buttons = [];
   // Loop for each option we'll offter
@@ -302,6 +315,8 @@ function handleGuess() {
     $('.guess').remove();
     // Start a new round
     setTimeout(newRound, 1000);
+    // Add a point to the score
+    score += 1;
   } else {
     // Otherwise they were wrong, so shake the clicked button
     $(this).effect('shake');
