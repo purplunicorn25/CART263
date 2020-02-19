@@ -10,7 +10,8 @@ tetouB ennA
 A simple guessing game based on voice synthesis. The computer reads out an
 animal name, but it reads it backwards. The user selects the animal they
 think it is and either gets it right or wrong. If right, a new level is generated.
-If wrong, the voice reads it out again.
+If wrong, the voice reads it out again. The player can use voice recognition to
+ask for help, another round, and to give the answer.
 
 Uses:
 
@@ -165,74 +166,61 @@ let $correctButton;
 // We also track the set of buttons
 let buttons = [];
 // How many possible answers there are per round
-const NUM_OPTIONS = 15;
+const NUM_OPTIONS = 25;
 // Keep track of the score
 let score = 0;
+// Keep track if the player has click to start
+// Also enables annyang
+let playing = false;
 
 // Get setup!
 $(document).ready(setup);
 
 // setup()
 //
-// We just start a new round right away!
+// Display the score, start a round, and make sure annyang is listening
 function setup() {
-  newRound();
-  // Make sure annyang is available...
-  if (annyang) {
-    // Add the commands to annyang.
-    var command = {
-      "I *give up": handleUserSpeech,
-      "*Say it again": handleHelp,
-      "I think it is *answer": handleAnswer
-    };
-    // Now we've defined the commands we give them to annyang
-    // by using its .addCommands() function.
-    annyang.addCommands(command);
-    // Finally we tell annyang to start listening
-    $(document).one("click", annyang.start);
-  }
-  // Display the score
-  displayScore();
-}
-
-// handleAnswer
-//
-// Check if the answer (voice) is the correct answer
-// If not, shake all the buttons and say the word backward again
-function handleAnswer(answer) {
-  // If the player says the wrong answer shake the buttons
-  // If they get it, start a new round
-  if (answer !== $correctButton.text()) {
-    $('.guess').effect('shake');
-    // And say the correct animal again to "help" them
-    sayBackwards($correctButton.text());
-  } else if (answer === $correctButton.text()) {
-    handleUserSpeech();
-  }
-}
-
-// handleUserSpeech
-//
-// Show the correct answer and create a new round
-function handleUserSpeech() {
-  // Highlight the correct answer
-  $correctButton.css({
-    "background-color": "green",
-    "color": "white"
+  // Tell annyang to start listening
+  $(document).one("click", annyang.start);
+  // Click to start and to activate the browser
+  // for voice recognition and audio playing
+  $(document).one("click", function() {
+    // Hide start instructions
+    $(".start").remove();
+    // Display the score
+    displayScore();
+    // We just start a new round right away!
+    newRound();
+    // Make sure annyang is available...
+    if (annyang) {
+      // Add the commands to annyang.
+      var command = {
+        "I *give up": showCorrectAnswer,
+        "*Say it again": handleHelp,
+        "I think it is *answer": handleAnswer
+      };
+      // Now we've defined the commands we give them to annyang
+      // by using its .addCommands() function.
+      annyang.addCommands(command);
+    }
   });
-  // Create a new round
-  setTimeout(resetRound, 1000);
-  // Add a point to the score
-  score += 1;
-  // Update the score
-  displayScore();
 }
 
-// handleHelp
+// displayScore
 //
-// Repeat the reversed name again
-function handleHelp() {
-  sayBackwards($correctButton.text());
+// Keep track of the score
+function displayScore() {
+  // Create a div with class score containing the score total
+  // and append it to document
+  let $score = $('<div></div>');
+  // Give it a class
+  $score.addClass("score");
+  // Set the text in the div to our label
+  $score.text(score);
+  // Finally, add the score to the page so we can see it
+  $('body').append($score);
+  // Return the button
+  return $score;
 }
 
 // newRound()
@@ -240,7 +228,6 @@ function handleHelp() {
 // Generates a set of possible answers randomly from the set of animals
 // and adds buttons for each one. Then chooses the correct button randomly.
 function newRound() {
-  console.log(score);
   // We empty the buttons array for the new round
   buttons = [];
   // Loop for each option we'll offter
@@ -255,6 +242,63 @@ function newRound() {
   // Choose a random button from the buttons array as our correct button
   $correctButton = getRandomElement(buttons);
   // Say the label (text) on this button
+  sayBackwards($correctButton.text());
+}
+
+// handleAnswer
+//
+// Check if the answer (voice) is the correct answer
+// If not, shake all the buttons and say the word backward again
+function handleAnswer(answer) {
+  // If the player says the wrong answer shake the buttons
+  // If they get it, start a new round
+  if (answer !== $correctButton.text()) {
+    $('.guess').effect('pulsate');
+    // And say the correct animal again to "help" them
+    sayBackwards($correctButton.text());
+  } else if (answer === $correctButton.text()) {
+    showCorrectAnswer();
+  }
+}
+
+// handleGuess()
+//
+// Checks whether this was the correct guess (button) and
+// if so starts a new round
+// if not indicates it was incorrect
+function handleGuess() {
+  // If the button they clicked on has the same label as
+  // the correct button, it must be the right answer...
+  if ($(this).text() === $correctButton.text()) {
+    showCorrectAnswer();
+  } else {
+    // Otherwise they were wrong, so shake the clicked button
+    $(this).effect('pulsate');
+    // And say the correct animal again to "help" them
+    sayBackwards($correctButton.text());
+  }
+}
+// handleUserSpeech
+//
+// Show the correct answer and create a new round
+function showCorrectAnswer() {
+  // Highlight the correct answer
+  $correctButton.css({
+    "background-color": "lime",
+    "color": "white"
+  });
+  // Create a new round
+  setTimeout(resetRound, 1000);
+  // Add a point to the score
+  score += 1;
+  // Update the score
+  $(".score").text(score);
+}
+
+// handleHelp
+//
+// Repeat the reversed name again
+function handleHelp() {
   sayBackwards($correctButton.text());
 }
 
@@ -302,48 +346,14 @@ function addButton(label) {
   // Listen for a click on the button which means the user has guessed
   $button.on('click', handleGuess);
   // Finally, add the button to the page so we can see it
-  $('body').append($button);
+  $('.guesses').append($button);
   // Return the button
   return $button;
 }
 
-// handleGuess()
+// resetRound
 //
-// Checks whether this was the correct guess (button) and
-// if so starts a new round
-// if not indicates it was incorrect
-function handleGuess() {
-  // If the button they clicked on has the same label as
-  // the correct button, it must be the right answer...
-  if ($(this).text() === $correctButton.text()) {
-    // Remove all the buttons
-    $('.guess').remove();
-    // Start a new round
-    setTimeout(newRound, 1000);
-    // Add a point to the score
-    score += 1;
-    // Update the score
-    displayScore();
-  } else {
-    // Otherwise they were wrong, so shake the clicked button
-    $(this).effect('shake');
-    // And say the correct animal again to "help" them
-    sayBackwards($correctButton.text());
-  }
-}
-
-// displayScore
-//
-// Keep track of the score
-function displayScore() {
-  // Create a div with class score containing the score total
-  // and append it to document
-  $(".score").text(score);
-}
-
-//
-//
-//
+// Make the game ready for a new round
 function resetRound() {
   // Remove all the buttons
   $('.guess').remove();

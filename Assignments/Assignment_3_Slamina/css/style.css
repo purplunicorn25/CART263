@@ -1,11 +1,49 @@
 body {
   height: 100%;
   width: 100%;
+  background-color: #85fdff;
   /* overflow: hidden; */
 }
 
 #click-to-begin {
   font-size: 2em;
   font-weight: bold;
-  text-align: center; 
+  text-align: center;
+}
+
+.guess.ui-button.ui-corner-all.ui-widget {
+  font-family: 'Lacquer', sans-serif;
+  margin: 10px;
+  background-color: #fcfb80;
+  color: #ff00f2;
+  border: none;
+}
+
+.guesses {
+  margin: auto;
+  width: 30%;
+  padding: 10px;
+  margin-top: 10%
+}
+
+.score {
+  position: absolute;
+  top: 0px;
+  margin: 20px;
+  font-family: 'Lacquer', sans-serif;
+  font-size: 60px;
+  color: #ff00f2;
+}
+
+.instructions {
+  position: absolute;
+  top: 5%;
+  margin: 20px;
+  font-family: 'Lacquer', sans-serif;
+  font-size: 20px;
+  color: #ff00f2;
+}
+
+h1 {
+  font-size: 60px;
 }
