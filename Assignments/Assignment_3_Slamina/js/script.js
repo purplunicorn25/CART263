@@ -180,8 +180,6 @@ $(document).ready(setup);
 //
 // Display the score, start a round, and make sure annyang is listening
 function setup() {
-  // Tell annyang to start listening
-  $(document).one("click", annyang.start);
   // Click to start and to activate the browser
   // for voice recognition and audio playing
   $(document).one("click", function() {
@@ -202,6 +200,8 @@ function setup() {
       // Now we've defined the commands we give them to annyang
       // by using its .addCommands() function.
       annyang.addCommands(command);
+      // Tell annyang to start listening
+      annyang.start();
     }
   });
 }
