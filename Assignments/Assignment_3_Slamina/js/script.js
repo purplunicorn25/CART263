@@ -176,7 +176,6 @@ $(document).ready(setup);
 //
 // We just start a new round right away!
 function setup() {
-  //
   newRound();
   // Make sure annyang is available...
   if (annyang) {
@@ -192,6 +191,8 @@ function setup() {
     // Finally we tell annyang to start listening
     $(document).one("click", annyang.start);
   }
+  // Display the score
+  displayScore();
 }
 
 // handleAnswer
@@ -221,6 +222,10 @@ function handleUserSpeech() {
   });
   // Create a new round
   setTimeout(resetRound, 1000);
+  // Add a point to the score
+  score += 1;
+  // Update the score
+  displayScore();
 }
 
 // handleHelp
@@ -317,12 +322,23 @@ function handleGuess() {
     setTimeout(newRound, 1000);
     // Add a point to the score
     score += 1;
+    // Update the score
+    displayScore();
   } else {
     // Otherwise they were wrong, so shake the clicked button
     $(this).effect('shake');
     // And say the correct animal again to "help" them
     sayBackwards($correctButton.text());
   }
+}
+
+// displayScore
+//
+// Keep track of the score
+function displayScore() {
+  // Create a div with class score containing the score total
+  // and append it to document
+  $(".score").text(score);
 }
 
 //
