@@ -1,49 +1,131 @@
 body {
-  height: 100%;
-  width: 100%;
-  background-color: #85fdff;
-  /* overflow: hidden; */
+  margin: 0px;
+  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif
 }
 
-#click-to-begin {
-  font-size: 2em;
-  font-weight: bold;
+.feed {
+  background-color: white;
+  position: absolute;
+  left: 35%;
+  width: 35%;
+  bottom: 0px;
+  height: 94%;
+}
+
+.title {
+  background-color: #efefef;
+  position: absolute;
+  left: 35%;
+  width: 35%;
+  top: 0px;
+  height: 6%;
   text-align: center;
 }
 
-.guess.ui-button.ui-corner-all.ui-widget {
-  font-family: 'Lacquer', sans-serif;
-  margin: 10px;
-  background-color: #fcfb80;
-  color: #ff00f2;
-  border: none;
+.banner {
+  background-color: white;
+  height: 8%;
 }
 
-.guesses {
-  margin: auto;
-  width: 30%;
-  padding: 10px;
-  margin-top: 10%
-}
-
-.score {
+.avatar {
+  width: 8%;
   position: absolute;
-  top: 0px;
-  margin: 20px;
-  font-family: 'Lacquer', sans-serif;
-  font-size: 60px;
-  color: #ff00f2;
+  top: 1.2%;
+  left: 2.5%;
 }
 
-.instructions {
+.username {
+  margin: 0;
   position: absolute;
-  top: 5%;
-  margin: 20px;
-  font-family: 'Lacquer', sans-serif;
-  font-size: 20px;
-  color: #ff00f2;
+  top: 3%;
+  left: 13%;
+  font-size: 90%;
+}
+
+.tripleDot {
+  width: 4%;
+  position: absolute;
+  top: 2.5%;
+  right: 2.5%;
+}
+
+.image {
+  background-color: pink;
+  width: 100%;
+}
+
+.actions {
+  position: relative;
+  height: 4%;
+}
+
+.heart {
+  position: absolute;
+  top: 20%;
+  left: 2%;
+  width: 5%;
+}
+
+.speechBubble {
+  position: absolute;
+  top: 20%;
+  left: 10%;
+  width: 4.8%;
+}
+
+.message {
+  position: absolute;
+  top: 16%;
+  left: 18%;
+  width: 6%;
+}
+
+.bookmark {
+  position: absolute;
+  top: 10%;
+  right: 2%;
+  width: 7%;
+}
+
+.likes {
+  margin: 0px;
+  margin-top: 1%;
+  margin-left: 2%;
+}
+
+.date {
+  font-size: 70%;
+  opacity: 50%;
+}
+
+p {
+  margin: 0px;
+  margin-top: 1%;
+  margin-left: 2%;
+  font-size: 90%;
 }
 
 h1 {
-  font-size: 60px;
+  position: absolute;
+  left: 3%;
+  font-size: 40px;
+}
+
+#plane {
+  position: absolute;
+  right: 3%;
+  top: 15%;
+}
+
+#instaLogo {
+  position: absolute;
+  left: 12%;
+  top: 20%;
+}
+
+#camera {
+  position: absolute;
+  left: 3%;
+  top: 8px;
 }
