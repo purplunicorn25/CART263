@@ -56,13 +56,19 @@ let images = [{
   }
 ];
 let currentImage = 0;
+let currentPost = 0;
 
 // Username
 let username = 'xXPerfectGurlXx';
-let trueUsername = 'Not_ListeningXO'
+let trueUsername = 'Not_ListeningXO';
+
+let $post;
+
+// An array to store posts
+let posts = [];
 
 // Likes
-let likes = 300;
+let likes = 0;
 
 // Caption
 let caption = 'This is me saying things';
@@ -80,57 +86,80 @@ $(document).ready(setup);
 //
 //
 function setup() {
-  addPost();
+  $(document).on('click', addPost);
+
 }
 
+// PostProperties
 //
+// Create a class for posts so that every new one has its own
+// properties of likes, caption, and comment
+class PostProperties {
+  constructor($postTemp) {
+    this.likes = 0;
+    this.caption;
+    this.comment;
+    this.post = $postTemp;
+  }
+}
+
+// addPost()
 //
-//
+// Create a full post with a banner, an image, the actions, the status and the date.
 function addPost() {
+  // POST
+  // Create a post that will contain all the elements
+  $post = $('<div></div>').addClass('post');
+  $post.appendTo('.feed');
+  // Add the post to the array
+  addList();
 
   // BANNER
   // Add the banner
   // Create a div
   let $banner = $('<div></div>').addClass('banner');
-  $banner.appendTo('.feed');
+  $banner.appendTo($post);
   // Add the image of the avatar
   let $avatar = $('<img></img>').addClass('avatar').attr('src', 'assets/images/avatar.png');
-  $avatar.appendTo('.banner');
+  $avatar.appendTo($banner);
+
   // Display the chosen username
   let $username = $(`<h3>${username}</h3>`).addClass('username');
-  $username.appendTo('.banner');
+  $username.appendTo($banner);
   // Display the triple dot
   let $tripleDot = $('<img></img>').addClass('tripleDot').attr('src', 'assets/images/triple_dot.png');
-  $tripleDot.appendTo('.banner');
+  $tripleDot.appendTo($banner);
 
   // IMAGE
   // Add the image
   let $image = $('<img>').addClass('image').attr('src', images[currentImage].path);
-  $image.appendTo('.feed');
+  $image.appendTo($post);
 
   // ACTIONS
   let $actions = $('<div></div>').addClass('actions');
-  $actions.appendTo('.feed');
+  $actions.appendTo($post);
   // Add the heart, the speech bubble, the plane, and the bookmark
   let $heart = $('<img></img>').addClass('heart').attr('src', 'assets/images/heart_logo.png');
-  $heart.appendTo('.actions');
+  $heart.appendTo($actions);
   let $speechBubble = $('<img></img>').addClass('speechBubble').attr('src', 'assets/images/speech_bubble_logo.png');
-  $speechBubble.appendTo('.actions');
+  $speechBubble.appendTo($actions);
   let $message = $('<img></img>').addClass('message').attr('src', 'assets/images/plane_logo.png');
-  $message.appendTo('.actions');
+  $message.appendTo($actions);
   let $bookmark = $('<img></img>').addClass('bookmark').attr('src', 'assets/images/bookmark_logo.png');
-  $bookmark.appendTo('.actions');
+  $bookmark.appendTo($actions);
 
   // STATUS
+  let $status = $('<div></div>').addClass('status');
+  $status.appendTo($post);
   // Add the likes
-  let $likes = $(`<p class='likes'><b>${likes} likes</b></p>`);
-  $likes.appendTo('.feed');
+  let $likes = $(`<p class='likes'><b>${posts[currentPost].likes} likes</b></p>`);
+  $likes.appendTo($post);
   // Add the caption
-  let $caption = $(`<p class='caption'><b>${username}</b> ${caption} likes</p>`);
-  $caption.appendTo('.feed');
+  let $caption = $(`<p class='caption'><b>${username}</b> ${posts[currentPost].caption} likes</p>`);
+  $caption.appendTo($post);
   // Add the comments
-  let $comment = $(`<p class='comment'><b>${trueUsername}</b> ${comment}</p>`);
-  $comment.appendTo('.feed');
+  let $comment = $(`<p class='comment'><b>${trueUsername}</b> ${posts[currentPost].comment}</p>`);
+  $comment.appendTo($post);
 
   // DATE
   // Create an array for every month so they are printed as a string not numbers
@@ -141,6 +170,16 @@ function addPost() {
   let date = month[today.getMonth()] + ' ' + today.getDate() + ', ' + today.getFullYear();
   // Add date
   let $date = $(`<p class='date'>${date}</p>`);
-  $date.appendTo('.feed');
+  $date.appendTo($post);
 
+  // Go to the next index of the image array and the post array
+  currentImage++;
+  currentPost++;
+}
+
+// addList
+//
+// Add the new post to the posts array
+function addList() {
+  posts.push(new PostProperties($post));
 }
