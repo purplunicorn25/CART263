@@ -40,18 +40,26 @@ let images = [{
     // Mountain
     path: 'assets/images/00.jpg',
     verbs: ['love', 'hate', 'feel', 'dance', 'climb'],
-    nouns: ['this', 'clown', 'clover', 'google', 'disaster', 'stress']
+    nouns: ['this', 'clown', 'clover', 'google', 'disaster', 'stress'],
+    captionPart1: 'Just ',
+    captionPart2: ' on a ',
+    captionPart3: '. ',
   },
   {
     // Busts
     path: 'assets/images/01.jpg',
+    verb: '',
     verbs: ['love', 'hate', 'feel', 'dance', 'climb'],
-    nouns: ['this', 'clown', 'clover', 'google', 'disaster', 'stress']
+    noun: '',
+    nouns: ['this', 'clown', 'clover', 'google', 'disaster', 'stress'],
+    caption: "Just " + this.verb + " on a " + this.noun + "."
   },
   {
     // Hide and Seek
     path: 'assets/images/02.jpg',
+    verb: '',
     verbs: ['love', 'hate', 'feel', 'dance', 'climb'],
+    noun: '',
     nouns: ['this', 'clown', 'clover', 'google', 'disaster', 'stress']
   }
 ];
@@ -87,7 +95,25 @@ $(document).ready(setup);
 //
 function setup() {
   $(document).on('click', addPost);
+  console.log(images[currentImage].verb);
+  displayCaptionEditor();
 
+}
+
+// displayCaption()
+//
+//
+function displayCaptionEditor() {
+  //
+  let $captionEditor = $('.captionEditor');
+  let $noun = $('<div class="noun"></div>');
+  let $verb = $('<div class="verb"></div>');
+  //
+  $captionEditor.append(images[currentImage].captionPart1);
+  $verb.appendTo($captionEditor);
+  $captionEditor.append(images[currentImage].captionPart2);
+  $noun.appendTo($captionEditor);
+  $captionEditor.append(images[currentImage].captionPart3);
 }
 
 // PostProperties
@@ -124,7 +150,7 @@ function addPost() {
   $avatar.appendTo($banner);
 
   // Display the chosen username
-  let $username = $(`<h3>${username}</h3>`).addClass('username');
+  let $username = $(`<p><b>${username}</b></p>`).addClass('username');
   $username.appendTo($banner);
   // Display the triple dot
   let $tripleDot = $('<img></img>').addClass('tripleDot').attr('src', 'assets/images/triple_dot.png');
