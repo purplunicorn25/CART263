@@ -33,6 +33,7 @@ https://unsplash.com/
 
 // Constants
 const NUMBER_OF_IMAGES = 9;
+const LIKES_PROBABILLITY = 0.2;
 
 // Variables
 // Posts
@@ -45,22 +46,23 @@ let images = [{
     captionPart2: ' on a ',
     captionPart3: '. ',
     hiddenCaption: 'this is just text that will be hidden',
-    fullCaption: 'eating'
+    fullCaption: 'eating',
+    likes: 0,
   },
   {
     // Busts
     path: 'assets/images/01.jpg',
     verbs: ['love', 'hate', 'feel', 'dance', 'climb'],
-    adjectives: ['this', 'clown', 'clover', 'google', 'disaster', 'stress'],
+    adjectives: ['marvelous', 'glamourous', 'clover', 'google', 'disaster', 'stress'],
     captionPart1: 'Now ',
     captionPart2: ' on a ',
     captionPart3: '. ',
     hiddenCaption: 'this is just text that will be hidden',
-    fullCaption: 'eating'
+    fullCaption: 'eating',
+    likes: 0,
   }
 ];
 let currentImage = 0;
-let currentPost = 0;
 
 // Username
 let username = 'xXPerfectGurlXx ';
@@ -69,15 +71,13 @@ let trueUsername = 'Not_ListeningXO';
 let $post;
 let $adj;
 let $verb;
+let $captionEditor;
 
 // An array to store posts
 let posts = [];
 
 // Likes
 let likes = 0;
-
-// Caption
-let caption = 'This is me saying things';
 
 // Comment
 let comment = 'I am hearing everything you are saying #noPrivacyYO';
@@ -93,16 +93,20 @@ $(document).ready(setup);
 //
 function setup() {
   //
-  $(document).one('click', addPost);
+  addPost();
   //
   displayCaptionEditor();
   //
   displayAdjs();
   displayVerbs();
   //
+  displayScore();
+  //
   handleWords();
   //
   postButton();
+  //
+  updateStatus()
 }
 
 // displayCaption
@@ -110,7 +114,7 @@ function setup() {
 //
 function displayCaptionEditor() {
   //
-  let $captionEditor = $('.captionEditor');
+  $captionEditor = $('.captionEditor');
   $adj = $('<div class="adj"></div>');
   $verb = $('<div class="verb"></div>');
   //
@@ -205,7 +209,7 @@ function postButton() {
   $postButton.on("click", publishCaption);
 }
 
-//
+// publishCaption
 //
 //
 function publishCaption() {
@@ -221,25 +225,65 @@ function publishCaption() {
   let $fullCaption = $(`<p><b>${username}</b>${images[currentImage].fullCaption}</p>`);
   $fullCaption.appendTo(".caption").effect("pulsate", "slow");
   //
+  responsiveVoice.speak(images[currentImage].fullCaption, 'US English Female');
+  //
   currentImage++;
+  //
+  handleScore();
+  //
+  handleLikes();
   //
   resetCaption();
   //
   setTimeout(addPost, 2000);
 }
 
+// resetCaption
+//
+//
 function resetCaption() {
-  console.log("reset");
+  //
+  $captionEditor.empty();
+  $(".verbs").remove();
+  $(".adjs").remove();
+  //
+  displayCaptionEditor();
+  displayVerbs();
+  displayAdjs();
 }
 
-
-// score
+// displayScore
 //
 //
-function score() {
-
+function displayScore() {
+  //
+  $('.score').append(`<b>${followers}</b><p>Followers</p>`);
+  //
+  $('.numPosts').append(`<b>${posts.length}</b><p>Posts</p>`);
+  //
+  $('.following').append(`<b>644</b><p>Following</p>`)
 }
 
+// handleScore
+//
+//
+function handleScore() {}
+
+// handleLikes
+//
+//
+function handleLikes() {}
+
+// updateStatus
+//
+//
+function updateStatus() {
+  // LIKES, POSTS, COMMENTS, FOLLOWERS
+  $('.score').empty();
+  $('.numPosts').empty();
+  $('.following').empty();
+  displayScore();
+}
 
 // PostProperties
 //
@@ -303,13 +347,13 @@ function addPost() {
   let $status = $('<div></div>').addClass('status');
   $status.appendTo($post);
   // Add the likes
-  let $likes = $(`<p class='likes'><b>${posts[currentPost].likes} likes</b></p>`);
+  let $likes = $(`<p class='likes'><b>${images[currentImage].likes} likes</b></p>`);
   $likes.appendTo($post);
   // Add the caption
   let $caption = $(`<div class='caption'><p><b>${username}</b> ${images[currentImage].hiddenCaption}</p></div>`);
   $caption.appendTo($post);
   // Add the comments
-  let $comment = $(`<p class='comment'><b>${trueUsername}</b> ${posts[currentPost].comment}</p>`);
+  let $comment = $(`<p class='comment'><b>${trueUsername}</b> ${posts[currentImage].comment}</p>`);
   $comment.appendTo($post);
 
   // DATE
@@ -322,6 +366,8 @@ function addPost() {
   // Add date
   let $date = $(`<p class='date'>${date}</p>`);
   $date.appendTo($post);
+
+  updateStatus();
 }
 
 // addList
