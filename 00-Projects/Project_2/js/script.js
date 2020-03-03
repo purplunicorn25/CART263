@@ -9,7 +9,7 @@ Anne Boutet
 A sly game that transforms the players' intention. Inspired from
 James Bridle's essay Something is wrong on the internet. The interface
 is a copycat of Instagram and the player's role is to create a caption with
-the pool of words provided. He will receive likes for  doing so and more
+the pools of words provided. He will receive likes for  doing so and more
 followers at first. Then the captions will get slighty modified every turn
 to change the meaning of the picture. The likes and followers will decrease,
 and the game is done when you don't have any followers. Captions will be read
@@ -40,37 +40,35 @@ let images = [{
     // Mountain
     path: 'assets/images/00.jpg',
     verbs: ['love', 'hate', 'feel', 'dance', 'climb'],
-    nouns: ['this', 'clown', 'clover', 'google', 'disaster', 'stress'],
+    adjectives: ['this', 'clown', 'clover', 'google', 'disaster', 'stress'],
     captionPart1: 'Just ',
     captionPart2: ' on a ',
     captionPart3: '. ',
+    hiddenCaption: 'this is just text that will be hidden',
+    fullCaption: 'eating'
   },
   {
     // Busts
     path: 'assets/images/01.jpg',
-    verb: '',
     verbs: ['love', 'hate', 'feel', 'dance', 'climb'],
-    noun: '',
-    nouns: ['this', 'clown', 'clover', 'google', 'disaster', 'stress'],
-    caption: "Just " + this.verb + " on a " + this.noun + "."
-  },
-  {
-    // Hide and Seek
-    path: 'assets/images/02.jpg',
-    verb: '',
-    verbs: ['love', 'hate', 'feel', 'dance', 'climb'],
-    noun: '',
-    nouns: ['this', 'clown', 'clover', 'google', 'disaster', 'stress']
+    adjectives: ['this', 'clown', 'clover', 'google', 'disaster', 'stress'],
+    captionPart1: 'Now ',
+    captionPart2: ' on a ',
+    captionPart3: '. ',
+    hiddenCaption: 'this is just text that will be hidden',
+    fullCaption: 'eating'
   }
 ];
 let currentImage = 0;
 let currentPost = 0;
 
 // Username
-let username = 'xXPerfectGurlXx';
+let username = 'xXPerfectGurlXx ';
 let trueUsername = 'Not_ListeningXO';
 
 let $post;
+let $adj;
+let $verb;
 
 // An array to store posts
 let posts = [];
@@ -85,36 +83,163 @@ let caption = 'This is me saying things';
 let comment = 'I am hearing everything you are saying #noPrivacyYO';
 
 // Follower count
-let score = 0;
+let followers = 1000;
 
 // Get setup!
 $(document).ready(setup);
 
-// setup()
+// setup
 //
 //
 function setup() {
-  $(document).on('click', addPost);
-  console.log(images[currentImage].verb);
+  //
+  $(document).one('click', addPost);
+  //
   displayCaptionEditor();
-
+  //
+  displayAdjs();
+  displayVerbs();
+  //
+  handleWords();
+  //
+  postButton();
 }
 
-// displayCaption()
+// displayCaption
 //
 //
 function displayCaptionEditor() {
   //
   let $captionEditor = $('.captionEditor');
-  let $noun = $('<div class="noun"></div>');
-  let $verb = $('<div class="verb"></div>');
+  $adj = $('<div class="adj"></div>');
+  $verb = $('<div class="verb"></div>');
   //
   $captionEditor.append(images[currentImage].captionPart1);
   $verb.appendTo($captionEditor);
   $captionEditor.append(images[currentImage].captionPart2);
-  $noun.appendTo($captionEditor);
+  $adj.appendTo($captionEditor);
   $captionEditor.append(images[currentImage].captionPart3);
 }
+
+// displayAdjs
+//
+//
+function displayAdjs() {
+  //
+  for (let i = 0; i < images[currentImage].adjectives.length; i++) {
+    //
+    let $adjContainer = $('<div class="adjs"></div>');
+    //
+    $adjContainer.appendTo(".adjPool");
+    //
+    $adjContainer.text(images[currentImage].adjectives[i]);
+  }
+}
+
+// displayVerbs
+//
+//
+function displayVerbs() {
+  //
+  for (let i = 0; i < images[currentImage].verbs.length; i++) {
+    //
+    let $verbContainer = $('<div class="verbs"></div>');
+    //
+    $verbContainer.appendTo(".verbPool");
+    //
+    $verbContainer.text(images[currentImage].verbs[i]);
+  }
+}
+
+// handleWords
+//
+//
+function handleWords() {
+  // VERB
+  //
+  let $verbs = $(".verbs");
+  $verbs.draggable({
+    revert: true,
+    cursor: "move",
+    cursorAt: {
+      top: 14.2,
+      left: 28
+    }
+  });
+  $verb.droppable({
+    greedy: $verbs,
+    drop: function(event, ui) {
+      // the ui is the droppable not the draggable
+      $(".verb").text("new verb")
+      let $ui = $(event.target.class);
+      // SABIIIIIIIIIIIIIIIIIIIINEEEEEEEEEEEEEEEEE! Get dropped element text + Constrain to a class
+    }
+  });
+
+  // ADJ
+  let $adjs = $(".adjs");
+  $adjs.draggable({
+    revert: true,
+    cursor: "move",
+    cursorAt: {
+      top: 14.2,
+      left: 28
+    }
+  });
+  $adj.droppable({
+    greedy: $verbs,
+    drop: function(event, ui) {
+      // the ui is the droppable not the draggable
+      $(".adj").text("new adj")
+      let $ui = $(event.target.class);
+      // SABIIIIIIIIIIIIIIIIIIIINEEEEEEEEEEEEEEEEE! Get dropped element text + Constrain to a class + wrap text for longer words
+    }
+  });
+}
+
+// postButton
+//
+//
+function postButton() {
+  let $postButton = $("#postButton");
+  $postButton.on("click", publishCaption);
+}
+
+//
+//
+//
+function publishCaption() {
+  //
+  $('.caption').css("background-color", "white");
+  $('.caption').empty();
+  //
+  let combinedCaption = `${images[currentImage].captionPart1}` + $(".verb").text() + `${images[currentImage].captionPart2}` +
+    $(".adj").text() + `${images[currentImage].captionPart3}`;
+  //
+  images[currentImage].fullCaption = combinedCaption;
+  //
+  let $fullCaption = $(`<p><b>${username}</b>${images[currentImage].fullCaption}</p>`);
+  $fullCaption.appendTo(".caption").effect("pulsate", "slow");
+  //
+  currentImage++;
+  //
+  resetCaption();
+  //
+  setTimeout(addPost, 2000);
+}
+
+function resetCaption() {
+  console.log("reset");
+}
+
+
+// score
+//
+//
+function score() {
+
+}
+
 
 // PostProperties
 //
@@ -129,7 +254,7 @@ class PostProperties {
   }
 }
 
-// addPost()
+// addPost
 //
 // Create a full post with a banner, an image, the actions, the status and the date.
 function addPost() {
@@ -181,7 +306,7 @@ function addPost() {
   let $likes = $(`<p class='likes'><b>${posts[currentPost].likes} likes</b></p>`);
   $likes.appendTo($post);
   // Add the caption
-  let $caption = $(`<p class='caption'><b>${username}</b> ${posts[currentPost].caption} likes</p>`);
+  let $caption = $(`<div class='caption'><p><b>${username}</b> ${images[currentImage].hiddenCaption}</p></div>`);
   $caption.appendTo($post);
   // Add the comments
   let $comment = $(`<p class='comment'><b>${trueUsername}</b> ${posts[currentPost].comment}</p>`);
@@ -197,10 +322,6 @@ function addPost() {
   // Add date
   let $date = $(`<p class='date'>${date}</p>`);
   $date.appendTo($post);
-
-  // Go to the next index of the image array and the post array
-  currentImage++;
-  currentPost++;
 }
 
 // addList

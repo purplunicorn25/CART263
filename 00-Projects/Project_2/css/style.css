@@ -101,6 +101,11 @@ body {
   margin-left: 2%;
 }
 
+.caption {
+  background-color: black;
+  user-select: none;
+}
+
 .date {
   font-size: 70%;
   opacity: 50%;
@@ -130,40 +135,58 @@ h1 {
   position: absolute;
   top: 25%;
   left: 3%;
-  background-color: lime;
   height: 100px;
   width: 400px;
+  font-size: 20px;
 }
 
 .verb {
-  background-color: blue;
+  background-color: yellow;
   width: 100px;
-  height: 20px;
+  height: 28.4px;
   display: inline-block;
 }
 
-.noun {
-  background-color: yellow;
+.adj {
+  background-color: blue;
   width: 100px;
-  height: 20px;
+  height: 28.4px;
   display: inline-block;
 }
 
 .verbPool {
-  background-color: magenta;
   width: 200px;
-  height: 400px;
+  height: 350px;
   position: absolute;
   top: 40%;
   left: 16.5%;
 }
 
-.nounPool {
-  background-color: purple;
+.adjPool {
   width: 200px;
-  height: 400px;
+  height: 350px;
   position: absolute;
   top: 40%;
+  left: 3%;
+}
+
+.adjs {
+  background-color: blue;
+  display: inline-block;
+  margin: 5px;
+  padding: 5px 10px 5px;
+}
+
+.verbs {
+  background-color: yellow;
+  display: inline-block;
+  margin: 5px;
+  padding: 5px 10px 5px;
+}
+
+#postButton {
+  position: absolute;
+  bottom: 8%;
   left: 3%;
 }
 
