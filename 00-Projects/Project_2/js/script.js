@@ -34,14 +34,15 @@ https://unsplash.com/
 // Constants
 const NUMBER_OF_IMAGES = 9;
 const LIKES_PROBABILLITY = 0.2;
+const ADDED_WORD_WIDTH = 25;
 
 // Variables
 // Posts
 let images = [{
     // Mountain
     path: 'assets/images/00.jpg',
-    verbs: ['love', 'hate', 'feel', 'dance', 'climb'],
-    adjectives: ['this', 'clown', 'clover', 'google', 'disaster', 'stress'],
+    verbs: ['thisthisthisthisthisthis', 'hate', 'feel', 'dance', 'climb'],
+    adjectives: ['thisthisthisthisthisthis', 'clown', 'clover', 'google', 'disaster', 'stress'],
     captionPart1: 'Just ',
     captionPart2: ' on a ',
     captionPart3: '. ',
@@ -171,12 +172,13 @@ function handleWords() {
     }
   });
   $verb.droppable({
-    greedy: $verbs,
+    accept: $verbs,
     drop: function(event, ui) {
       // the ui is the droppable not the draggable
-      $(".verb").text("new verb")
-      let $ui = $(event.target.class);
-      // SABIIIIIIIIIIIIIIIIIIIINEEEEEEEEEEEEEEEEE! Get dropped element text + Constrain to a class
+      $(".verb").text($(ui.draggable[0]).text());
+      //
+      let updatedWidth = ui.draggable[0].getBoundingClientRect().width + ADDED_WORD_WIDTH;
+      $(".verb").css("width", updatedWidth);
     }
   });
 
@@ -191,12 +193,13 @@ function handleWords() {
     }
   });
   $adj.droppable({
-    greedy: $verbs,
+    accept: $adjs,
     drop: function(event, ui) {
-      // the ui is the droppable not the draggable
-      $(".adj").text("new adj")
-      let $ui = $(event.target.class);
-      // SABIIIIIIIIIIIIIIIIIIIINEEEEEEEEEEEEEEEEE! Get dropped element text + Constrain to a class + wrap text for longer words
+      //
+      $(".adj").text($(ui.draggable[0]).text());
+      //
+      let updatedWidth = ui.draggable[0].getBoundingClientRect().width + ADDED_WORD_WIDTH;
+      $(".adj").css("width", updatedWidth);
     }
   });
 }
