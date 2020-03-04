@@ -35,6 +35,8 @@ https://unsplash.com/
 const NUMBER_OF_IMAGES = 9;
 const LIKES_PROBABILLITY = 0.2;
 const ADDED_WORD_WIDTH = 25;
+const REVEAL_PROBABILITY = 0.1;
+const UPDATE_RATE = 100;
 
 // Variables
 // Posts
@@ -49,6 +51,7 @@ let images = [{
     hiddenCaption: 'this is just text that will be hidden',
     fullCaption: 'eating',
     likes: 0,
+    maxLikes: 523
   },
   {
     // Busts
@@ -61,24 +64,44 @@ let images = [{
     hiddenCaption: 'this is just text that will be hidden',
     fullCaption: 'eating',
     likes: 0,
+    maxLikes: 397
+  },
+  {
+    // Busts
+    path: 'assets/images/02.jpg',
+    verbs: ['love', 'hate', 'feel', 'dance', 'climb'],
+    adjectives: ['marvelous', 'glamourous', 'clover', 'google', 'disaster', 'stress'],
+    captionPart1: 'Now ',
+    captionPart2: ' on a ',
+    captionPart3: '. ',
+    hiddenCaption: 'this is just text that will be hidden',
+    fullCaption: 'eating',
+    likes: 0,
+    maxLikes: 269
   }
 ];
+
+// The ULTIMATE variable of this game
 let currentImage = 0;
 
 // Username
 let username = 'xXPerfectGurlXx ';
 let trueUsername = 'Not_ListeningXO';
 
-let $post;
+//
 let $adj;
 let $verb;
 let $captionEditor;
 
 // An array to store posts
 let posts = [];
+//
+let $post;
 
-// Likes
+// Initial ikes
 let likes = 0;
+//
+let likesRate = 1000;
 
 // Comment
 let comment = 'I am hearing everything you are saying #noPrivacyYO';
@@ -107,7 +130,17 @@ function setup() {
   //
   postButton();
   //
-  updateStatus()
+  setInterval(handleLikes, UPDATE_RATE);
+}
+
+//
+//
+//
+function handleLikes() {
+  let randomNumber = Math.random();
+  if (randomNumber < REVEAL_PROBABILITY) {
+    defineLikes();
+  }
 }
 
 // displayCaption
@@ -232,10 +265,6 @@ function publishCaption() {
   //
   currentImage++;
   //
-  handleScore();
-  //
-  handleLikes();
-  //
   resetCaption();
   //
   setTimeout(addPost, 2000);
@@ -253,6 +282,8 @@ function resetCaption() {
   displayCaptionEditor();
   displayVerbs();
   displayAdjs();
+  //
+  handleWords();
 }
 
 // displayScore
@@ -275,18 +306,22 @@ function handleScore() {}
 // handleLikes
 //
 //
-function handleLikes() {}
-
-// updateStatus
-//
-//
-function updateStatus() {
-  // LIKES, POSTS, COMMENTS, FOLLOWERS
-  $('.score').empty();
-  $('.numPosts').empty();
-  $('.following').empty();
-  displayScore();
+function defineLikes() {
+  //
+  if (currentImage > 0) {
+    for (let i = 0; i < currentImage; i++) {
+      //
+      if (images[i].likes < images[i].maxLikes) {
+        images[i].likes++;
+        //
+        let likesE = posts[i].post.children('.likes')[0];
+        $(likesE).css("font-weight", "bold");
+        $(likesE).text(`${images[i].likes} likes`);
+      }
+    }
+  }
 }
+
 
 // PostProperties
 //
@@ -309,8 +344,6 @@ function addPost() {
   // Create a post that will contain all the elements
   $post = $('<div></div>').addClass('post');
   $post.appendTo('.feed');
-  // Add the post to the array
-  addList();
 
   // BANNER
   // Add the banner
@@ -356,7 +389,7 @@ function addPost() {
   let $caption = $(`<div class='caption'><p><b>${username}</b> ${images[currentImage].hiddenCaption}</p></div>`);
   $caption.appendTo($post);
   // Add the comments
-  let $comment = $(`<p class='comment'><b>${trueUsername}</b> ${posts[currentImage].comment}</p>`);
+  let $comment = $(`<p class='comment'><b>${trueUsername}</b> ${images[currentImage].comment}</p>`);
   $comment.appendTo($post);
 
   // DATE
@@ -370,12 +403,13 @@ function addPost() {
   let $date = $(`<p class='date'>${date}</p>`);
   $date.appendTo($post);
 
-  updateStatus();
+  // Add the post to the array
+  addList($post);
 }
 
 // addList
 //
 // Add the new post to the posts array
-function addList() {
-  posts.push(new PostProperties($post));
+function addList(p) {
+  posts.push(new PostProperties(p));
 }
