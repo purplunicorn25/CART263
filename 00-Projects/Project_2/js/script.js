@@ -49,9 +49,12 @@ let images = [{
     captionPart2: ' on a ',
     captionPart3: '. ',
     hiddenCaption: 'this is just text that will be hidden',
-    fullCaption: 'eating',
+    fullCaption: '',
     likes: 0,
-    maxLikes: 523
+    maxLikes: 123,
+    followerProbability: 0.05,
+    followerSum: 1,
+    fullCaptionE: 0
   },
   {
     // Busts
@@ -62,9 +65,11 @@ let images = [{
     captionPart2: ' on a ',
     captionPart3: '. ',
     hiddenCaption: 'this is just text that will be hidden',
-    fullCaption: 'eating',
+    fullCaption: '',
     likes: 0,
-    maxLikes: 397
+    maxLikes: 106,
+    followerProbability: 0.05,
+    followerSum: 1
   },
   {
     // Busts
@@ -75,39 +80,43 @@ let images = [{
     captionPart2: ' on a ',
     captionPart3: '. ',
     hiddenCaption: 'this is just text that will be hidden',
-    fullCaption: 'eating',
+    fullCaption: '',
     likes: 0,
-    maxLikes: 269
+    maxLikes: 92,
+    followerProbability: 0.1,
+    followerSum: -1
   }
 ];
 
 // The ULTIMATE variable of this game
 let currentImage = 0;
 
-// Username
+// GAME
+let playing = false;
+let gameOver = false;
+
+// USERNAME
 let username = 'xXPerfectGurlXx ';
 let trueUsername = 'Not_ListeningXO';
 
-//
+// CAPTION
 let $adj;
 let $verb;
 let $captionEditor;
 
-// An array to store posts
+// POSTS
 let posts = [];
-//
 let $post;
 
-// Initial ikes
+// LIKES
 let likes = 0;
-//
 let likesRate = 1000;
 
-// Comment
+// COMMENT
 let comment = 'I am hearing everything you are saying #noPrivacyYO';
 
-// Follower count
-let followers = 1000;
+// FOLLOWERS
+let followers = 509;
 
 // Get setup!
 $(document).ready(setup);
@@ -126,21 +135,15 @@ function setup() {
   //
   displayScore();
   //
-  handleWords();
-  //
   postButton();
   //
+  handleWords();
+  //
   setInterval(handleLikes, UPDATE_RATE);
-}
+  //
+  setInterval(handleScore, UPDATE_RATE);
 
-//
-//
-//
-function handleLikes() {
-  let randomNumber = Math.random();
-  if (randomNumber < REVEAL_PROBABILITY) {
-    defineLikes();
-  }
+  console.log(gameOver);
 }
 
 // displayCaption
@@ -212,6 +215,8 @@ function handleWords() {
       //
       let updatedWidth = ui.draggable[0].getBoundingClientRect().width + ADDED_WORD_WIDTH;
       $(".verb").css("width", updatedWidth);
+      //
+      handleButton();
     }
   });
 
@@ -233,6 +238,8 @@ function handleWords() {
       //
       let updatedWidth = ui.draggable[0].getBoundingClientRect().width + ADDED_WORD_WIDTH;
       $(".adj").css("width", updatedWidth);
+      //
+      handleButton();
     }
   });
 }
@@ -241,8 +248,24 @@ function handleWords() {
 //
 //
 function postButton() {
+  //
   let $postButton = $("#postButton");
+  $postButton.button();
+  $postButton.button('disable');
+  //
   $postButton.on("click", publishCaption);
+}
+
+// handleButton
+//
+//
+function handleButton() {
+  //
+  let $postButton = $("#postButton");
+  if ($('.verb').text() !== '' && $('.adj').text() !== '') {
+    console.log("filled");
+    $("#postButton").button('enable');
+  }
 }
 
 // publishCaption
@@ -251,57 +274,22 @@ function postButton() {
 function publishCaption() {
   //
   $('.caption').css("background-color", "white");
-  $('.caption').empty();
+  // $('.caption').empty();
   //
   let combinedCaption = `${images[currentImage].captionPart1}` + $(".verb").text() + `${images[currentImage].captionPart2}` +
     $(".adj").text() + `${images[currentImage].captionPart3}`;
   //
   images[currentImage].fullCaption = combinedCaption;
   //
-  let $fullCaption = $(`<p><b>${username}</b>${images[currentImage].fullCaption}</p>`);
-  $fullCaption.appendTo(".caption").effect("pulsate", "slow");
+  let fullCaptionE = posts[currentImage].post.children('.caption')[0];
+  $(fullCaptionE).html(`<p><b>${username}</b> ${images[currentImage].fullCaption}</p>`).effect("pulsate", "slow").addClass('.caption');
   //
   responsiveVoice.speak(images[currentImage].fullCaption, 'US English Female');
-  //
-  currentImage++;
   //
   resetCaption();
   //
   setTimeout(addPost, 2000);
 }
-
-// resetCaption
-//
-//
-function resetCaption() {
-  //
-  $captionEditor.empty();
-  $(".verbs").remove();
-  $(".adjs").remove();
-  //
-  displayCaptionEditor();
-  displayVerbs();
-  displayAdjs();
-  //
-  handleWords();
-}
-
-// displayScore
-//
-//
-function displayScore() {
-  //
-  $('.score').append(`<b>${followers}</b><p>Followers</p>`);
-  //
-  $('.numPosts').append(`<b>${posts.length}</b><p>Posts</p>`);
-  //
-  $('.following').append(`<b>644</b><p>Following</p>`)
-}
-
-// handleScore
-//
-//
-function handleScore() {}
 
 // handleLikes
 //
@@ -322,6 +310,75 @@ function defineLikes() {
   }
 }
 
+// handleLikes
+//
+//
+function handleLikes() {
+  let randomNumber = Math.random();
+  if (randomNumber < REVEAL_PROBABILITY) {
+    defineLikes();
+  }
+}
+
+// displayScore
+//
+//
+function displayScore() {
+  //
+  $('.score').append(`<b>${followers}</b><p>Followers</p>`);
+  //
+  $('.numPosts').append(`<b>${posts.length}</b><p>Posts</p>`);
+  //
+  $('.following').append(`<b>644</b><p>Following</p>`);
+}
+
+// updateScore
+//
+//
+function updateScore() {
+  //
+  let numPostsE = $('.numPosts').children('b')[0];
+  $(numPostsE).text(posts.length);
+  //
+  let followersE = $('.score').children('b')[0];
+  $(followersE).text(followers);
+}
+
+// handleScore
+//
+//
+function handleScore() {
+  //
+  let randomNumber = Math.random();
+  //
+  if (currentImage === images.length) {
+    followers -= 10;
+    gameOver = true;
+    //
+  } else if (randomNumber < images[currentImage].followerProbability) {
+    followers += images[currentImage].followerSum;
+  }
+  //
+  updateScore();
+}
+
+// resetCaption
+//
+//
+function resetCaption() {
+  //
+  $captionEditor.empty();
+  $(".verbs").remove();
+  $(".adjs").remove();
+  //
+  displayCaptionEditor();
+  displayVerbs();
+  displayAdjs();
+  //
+  handleWords();
+  //
+  currentImage++;
+}
 
 // PostProperties
 //
@@ -410,6 +467,6 @@ function addPost() {
 // addList
 //
 // Add the new post to the posts array
-function addList(p) {
-  posts.push(new PostProperties(p));
+function addList($post) {
+  posts.push(new PostProperties($post));
 }
