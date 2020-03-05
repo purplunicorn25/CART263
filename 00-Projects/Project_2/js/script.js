@@ -14,7 +14,7 @@ followers at first. Then the captions will get slighty modified every turn
 to change the meaning of the picture. The likes and followers will decrease,
 and the game is done when you don't have any followers. Captions will be read
 with responsivevoice and annyang will listen and add commments to the current
-post (sneaky). The game is not randomly generated and is meant to be played
+post (sneaky) **TO BE ADDED LATER. The game is not randomly generated and is meant to be played
 only once as a one time experience: the pictures will be the same, so
 will the modified captions, etc.
 
@@ -123,38 +123,37 @@ $(document).ready(setup);
 
 // setup
 //
-//
+// Displays all the elements, their initial behaviors
+// and update the status elements (followers & likes)
 function setup() {
-  //
+  // Add the first post
   addPost();
-  //
+  // Display the caption editor
   displayCaptionEditor();
-  //
+  // Display the word options
   displayAdjs();
   displayVerbs();
-  //
+  // Display the score
   displayScore();
-  //
+  // Display the button
   postButton();
-  //
+  // Deal with the behavior of the words and word boxes
   handleWords();
-  //
+  // Always update the likes
   setInterval(handleLikes, UPDATE_RATE);
-  //
+  // Always update the score
   setInterval(handleScore, UPDATE_RATE);
-
-  console.log(gameOver);
 }
 
 // displayCaption
 //
-//
+// Create the sentence and divs that allow the user to compose a sentence
 function displayCaptionEditor() {
-  //
+  // Create the divs for the two type of words
   $captionEditor = $('.captionEditor');
   $adj = $('<div class="adj"></div>');
   $verb = $('<div class="verb"></div>');
-  //
+  // Append all the text elements in order
   $captionEditor.append(images[currentImage].captionPart1);
   $verb.appendTo($captionEditor);
   $captionEditor.append(images[currentImage].captionPart2);
@@ -164,40 +163,40 @@ function displayCaptionEditor() {
 
 // displayAdjs
 //
-//
+// Display all the adjs objects
 function displayAdjs() {
-  //
+  // Select all of them in the array
   for (let i = 0; i < images[currentImage].adjectives.length; i++) {
-    //
+    // Create divs for them
     let $adjContainer = $('<div class="adjs"></div>');
-    //
+    // Put them in the container
     $adjContainer.appendTo(".adjPool");
-    //
+    // Apply the text
     $adjContainer.text(images[currentImage].adjectives[i]);
   }
 }
 
 // displayVerbs
 //
-//
+// Display all the verbs objects
 function displayVerbs() {
-  //
+  // Select all of them in the array
   for (let i = 0; i < images[currentImage].verbs.length; i++) {
-    //
+    // Create divs for them
     let $verbContainer = $('<div class="verbs"></div>');
-    //
+    // Put them in the container
     $verbContainer.appendTo(".verbPool");
-    //
+    // Apply the text
     $verbContainer.text(images[currentImage].verbs[i]);
   }
 }
 
 // handleWords
 //
-//
+// Handle the behavior of the words and the boxes
 function handleWords() {
   // VERB
-  //
+  // Make verbs draggable and verb droppable
   let $verbs = $(".verbs");
   $verbs.draggable({
     revert: true,
@@ -210,17 +209,17 @@ function handleWords() {
   $verb.droppable({
     accept: $verbs,
     drop: function(event, ui) {
-      // the ui is the droppable not the draggable
+      // Apply the text of the draggable to the droppable
       $(".verb").text($(ui.draggable[0]).text());
-      //
+      // Ensure the width corresponds to the word
       let updatedWidth = ui.draggable[0].getBoundingClientRect().width + ADDED_WORD_WIDTH;
       $(".verb").css("width", updatedWidth);
-      //
+      // Enable the button if both boxes are filled
       handleButton();
     }
   });
-
   // ADJ
+  // Make ajds draggable and adj droppable
   let $adjs = $(".adjs");
   $adjs.draggable({
     revert: true,
@@ -233,12 +232,12 @@ function handleWords() {
   $adj.droppable({
     accept: $adjs,
     drop: function(event, ui) {
-      //
+      // Apply the text of the draggable to the droppable
       $(".adj").text($(ui.draggable[0]).text());
-      //
+      // Ensure the width corresponds to the word
       let updatedWidth = ui.draggable[0].getBoundingClientRect().width + ADDED_WORD_WIDTH;
       $(".adj").css("width", updatedWidth);
-      //
+      // Enable the button if both boxes are filled
       handleButton();
     }
   });
@@ -246,62 +245,59 @@ function handleWords() {
 
 // postButton
 //
-//
+// Create a button that publishes the caption
 function postButton() {
-  //
+  // Created a button that is disabled
   let $postButton = $("#postButton");
   $postButton.button();
   $postButton.button('disable');
-  //
+  // Publish the caption when clicked
   $postButton.on("click", publishCaption);
 }
 
 // handleButton
 //
-//
+// Checks if the box for the verb and the adjective are filled
+// before being able to publish the caption
 function handleButton() {
-  //
+  // If the boxes are both filled, enable the button
   let $postButton = $("#postButton");
   if ($('.verb').text() !== '' && $('.adj').text() !== '') {
-    console.log("filled");
     $("#postButton").button('enable');
   }
 }
 
 // publishCaption
 //
-//
+// Combine and publish the new caption and call a new post when done
 function publishCaption() {
-  //
+  // Remove the mask of the caption
   $('.caption').css("background-color", "white");
-  // $('.caption').empty();
-  //
+  // Combine all the caption parts
   let combinedCaption = `${images[currentImage].captionPart1}` + $(".verb").text() + `${images[currentImage].captionPart2}` +
     $(".adj").text() + `${images[currentImage].captionPart3}`;
-  //
+  // Store it in a variable
   images[currentImage].fullCaption = combinedCaption;
-  //
+  // Apply the text to the right post
   let fullCaptionE = posts[currentImage].post.children('.caption')[0];
   $(fullCaptionE).html(`<p><b>${username}</b> ${images[currentImage].fullCaption}</p>`).effect("pulsate", "slow").addClass('.caption');
-  //
+  // Read it for the user to notice the changes
   responsiveVoice.speak(images[currentImage].fullCaption, 'US English Female');
-  //
+  // Call a new post
   resetCaption();
-  //
-  setTimeout(addPost, 2000);
 }
 
 // handleLikes
 //
-//
+// Create the likes and apply them to the right post
 function defineLikes() {
-  //
+  // Only update the likes after the caption is published
   if (currentImage > 0) {
     for (let i = 0; i < currentImage; i++) {
-      //
+      // Constrain the likes to a number
       if (images[i].likes < images[i].maxLikes) {
         images[i].likes++;
-        //
+        // Update the text
         let likesE = posts[i].post.children('.likes')[0];
         $(likesE).css("font-weight", "bold");
         $(likesE).text(`${images[i].likes} likes`);
@@ -312,9 +308,11 @@ function defineLikes() {
 
 // handleLikes
 //
-//
+// Calls the likes incrementation randomly
 function handleLikes() {
+  // Get a random number
   let randomNumber = Math.random();
+  // To make it unpredictable, only change the likes if =>
   if (randomNumber < REVEAL_PROBABILITY) {
     defineLikes();
   }
@@ -322,33 +320,33 @@ function handleLikes() {
 
 // displayScore
 //
-//
+// Create and display the score interface
 function displayScore() {
-  //
+  // Create the score
   $('.score').append(`<b>${followers}</b><p>Followers</p>`);
-  //
+  // Create the post counter
   $('.numPosts').append(`<b>${posts.length}</b><p>Posts</p>`);
-  //
+  // Create the follower counter
   $('.following').append(`<b>644</b><p>Following</p>`);
 }
 
 // updateScore
 //
-//
+// Rewrite the text to keep it up to date
 function updateScore() {
-  //
+  // Update the number of posts
   let numPostsE = $('.numPosts').children('b')[0];
   $(numPostsE).text(posts.length);
-  //
+  // Update the number of followers
   let followersE = $('.score').children('b')[0];
   $(followersE).text(followers);
 }
 
 // handleScore
 //
-//
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 function handleScore() {
-  //
+  // Get a random number
   let randomNumber = Math.random();
   //
   if (currentImage === images.length) {
@@ -364,20 +362,23 @@ function handleScore() {
 
 // resetCaption
 //
-//
+// Reset the caption editor with new words
+// Move currentImage by 1 to access the next picture
 function resetCaption() {
-  //
+  // Empty all the div containers
   $captionEditor.empty();
   $(".verbs").remove();
   $(".adjs").remove();
-  //
+  // Fill them up again with the content of the next post
   displayCaptionEditor();
   displayVerbs();
   displayAdjs();
-  //
+  // Make sure they behave correctly
   handleWords();
-  //
+  // Move to the next image
   currentImage++;
+  // Add the new post to the page
+  setTimeout(addPost, 2000);
 }
 
 // PostProperties
