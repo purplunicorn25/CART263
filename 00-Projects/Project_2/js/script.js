@@ -47,12 +47,12 @@ let images = [{
       'paralyzed by', 'terrified by', 'gasping at', 'hiking by', 'thinking by', 'observing', 'considering'
     ],
     adjectives: ['mesmerizing', 'fascinating', 'hypnotizing', 'magnetizing', 'captivation', 'compelling',
-      'intriguing', 'alarming', 'foggy', 'misty', 'dark', 'coulded', 'ominous', 'splendid', 'wonderful', 'beautiful', 'grand'
+      'intriguing', 'alarming', 'foggy', 'misty', 'dark', 'clouded', 'ominous', 'splendid', 'wonderful', 'beautiful', 'grand'
     ],
     captionPart1: 'Now ',
     captionPart2: ' the ',
     captionPart3: ' void.',
-    secretPart: " They say you can only jump once without a parachute. I guess it's the same with hand gliding, right?",
+    secretPart: " They say you can only jump once without a parachute. I guess it's the same with cliff jumping, right?",
     fullCaption: '',
     likes: 0,
     maxLikes: 123,
@@ -70,7 +70,7 @@ let images = [{
     ],
     captionPart1: 'I wonder what ',
     captionPart2: ' would say about my ',
-    secretPart: "But it's not like these symbol of white male supremacy can help getting a better salary.",
+    secretPart: "But it's not like these symbol of white male supremacy can help me get a better salary.",
     captionPart3: ' life choices. ',
     fullCaption: '',
     likes: 0,
@@ -87,12 +87,50 @@ let images = [{
     ],
     captionPart1: 'Enjoying vacations by ',
     captionPart2: ' among these ',
-    secretPart: 'Good thing he is really fast at getting away from lurking strangers.',
+    secretPart: 'Good thing that kid is really fast at getting away from lurking strangers.',
     captionPart3: ' rock formations. ',
     fullCaption: '',
     likes: 0,
     maxLikes: 92,
     followerProbability: 0.1,
+    followersFluctuation: -1
+  },
+  {
+    // Desert
+    path: 'assets/images/03.jpg',
+    // adjectives in that case
+    verbs: ['dry', 'dusty', 'waterless', 'dirty', 'corrupted', 'bitter', 'boiling', 'scorching', 'burning'],
+    adjectives: ['harsh', 'merciless', 'broad', 'unforgiving', 'unending', 'pitiless', 'immense', 'lonely', 'enormous',
+      'imposing', 'magnificent', 'eternal', 'noble'
+    ],
+    captionPart1: 'The air is ',
+    captionPart2: ' in this ',
+    secretPart: 'I hope my family and I can cross to the other side to safety... to start a new life.',
+    captionPart3: ' desert. ',
+    fullCaption: '',
+    likes: 0,
+    maxLikes: 61,
+    followerProbability: 0.15,
+    followersFluctuation: -1
+  },
+  {
+    // Balloons
+    path: 'assets/images/04.jpg',
+    // nouns in that case
+    verbs: ['Stacey', 'Roxanne', 'Megan', 'Joey', 'Lady Joe', 'Suzann', 'Martine', 'Delia', 'Josephine', 'Beatrice',
+      'Amelia', 'Nathalie', 'Caroline', 'Kiki'
+    ],
+    adjectives: ['hopeless', 'merciless', 'depressing', 'gloomy', 'lonely', 'oppressive', 'melancholic', 'joyless', 'boring',
+      'dull', 'monotonous', 'tedious', 'flat', 'neutral', 'mild', 'bearable', 'troubled'
+    ],
+    captionPart1: 'Looks like ',
+    captionPart2: ' missed my birthday. Like everyone else. Another ',
+    secretPart: "I can't quite grasp hapiness, but at least I got these smiling balloons.",
+    captionPart3: ' year to come. ',
+    fullCaption: '',
+    likes: 0,
+    maxLikes: 61,
+    followerProbability: 0.15,
     followersFluctuation: -1
   }
 ];
