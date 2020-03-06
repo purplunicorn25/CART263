@@ -43,12 +43,16 @@ const UPDATE_RATE = 100;
 let images = [{
     // Mountain
     path: 'assets/images/00.jpg',
-    verbs: ['thisthisthisthisthisthis', 'hate', 'feel', 'dance', 'climb'],
-    adjectives: ['thisthisthisthisthisthis', 'clown', 'clover', 'google', 'disaster', 'stress'],
-    captionPart1: 'Just ',
-    captionPart2: ' on a ',
-    captionPart3: '. ',
-    hiddenCaption: 'this is just text that will be hidden',
+    verbs: ['starring at', 'enjoying', 'meditating by', 'contemplating', 'experiencing', 'savouring',
+      'paralyzed by', 'terrified by', 'gasping at', 'hiking by', 'thinking by', 'observing', 'considering'
+    ],
+    adjectives: ['mesmerizing', 'fascinating', 'hypnotizing', 'magnetizing', 'captivation', 'compelling',
+      'intriguing', 'alarming', 'foggy', 'misty', 'dark', 'coulded', 'ominous', 'splendid', 'wonderful', 'beautiful', 'grand'
+    ],
+    captionPart1: 'Now ',
+    captionPart2: ' the ',
+    captionPart3: ' void.',
+    secretPart: " They say you can only jump once without a parachute. I guess it's the same with hand gliding, right?",
     fullCaption: '',
     likes: 0,
     maxLikes: 123,
@@ -59,12 +63,15 @@ let images = [{
   {
     // Busts
     path: 'assets/images/01.jpg',
-    verbs: ['love', 'hate', 'feel', 'dance', 'climb'],
-    adjectives: ['marvelous', 'glamourous', 'clover', 'google', 'disaster', 'stress'],
-    captionPart1: 'Now ',
-    captionPart2: ' on a ',
-    captionPart3: '. ',
-    hiddenCaption: 'this is just text that will be hidden',
+    // Verbs are nouns in this one
+    verbs: ['Plato', 'Aristotle', 'Caesar', 'Socrates', 'Aesop', 'Cicero', 'Marcus Aurelius', 'Diogenes', 'Augustus', 'Homer'],
+    adjectives: ['debatable', 'precarious', 'indubious', 'unquestionable', 'hazardous', 'exceptional', 'shameful',
+      'unsual', 'peculiar', 'traditional', 'ordinary', 'eccentric'
+    ],
+    captionPart1: 'I wonder what ',
+    captionPart2: ' would say about my ',
+    secretPart: "But it's not like these symbol of white male supremacy can help getting a better salary.",
+    captionPart3: ' life choices. ',
     fullCaption: '',
     likes: 0,
     maxLikes: 106,
@@ -72,14 +79,16 @@ let images = [{
     followersFluctuation: 1
   },
   {
-    // Busts
+    // Rocks
     path: 'assets/images/02.jpg',
-    verbs: ['love', 'hate', 'feel', 'dance', 'climb'],
-    adjectives: ['marvelous', 'glamourous', 'clover', 'google', 'disaster', 'stress'],
-    captionPart1: 'Now ',
-    captionPart2: ' on a ',
-    captionPart3: '. ',
-    hiddenCaption: 'this is just text that will be hidden',
+    verbs: ['playing', 'running', 'racing', 'walking', 'wandering', 'exploring', 'scouting', 'roaming', 'sightseeing', 'wayfaring'],
+    adjectives: ['majestic', 'colossal', 'monumental', 'hazardous', 'massive', 'huge', 'towering', 'cyclopean', 'labyrinthine',
+      'tangled', 'tortuous', 'enigmatic', 'mysterious', 'complex'
+    ],
+    captionPart1: 'Enjoying vacations by ',
+    captionPart2: ' among these ',
+    secretPart: 'Good thing he is really fast at getting away from lurking strangers.',
+    captionPart3: ' rock formations. ',
     fullCaption: '',
     likes: 0,
     maxLikes: 92,
@@ -102,6 +111,7 @@ let trueUsername = 'Not_ListeningXO';
 let $adj;
 let $verb;
 let $captionEditor;
+let hiddenCaption = 'this is just text that will be hidden';
 
 // POSTS
 let posts = [];
@@ -274,14 +284,14 @@ function publishCaption() {
   $('.caption').css("background-color", "white");
   // Combine all the caption parts
   let combinedCaption = `${images[currentImage].captionPart1}` + $(".verb").text() + `${images[currentImage].captionPart2}` +
-    $(".adj").text() + `${images[currentImage].captionPart3}`;
+    $(".adj").text() + `${images[currentImage].captionPart3}${images[currentImage].secretPart}`;
   // Store it in a variable
   images[currentImage].fullCaption = combinedCaption;
   // Apply the text to the right post
   let fullCaptionE = posts[currentImage].post.children('.caption')[0];
   $(fullCaptionE).html(`<p><b>${username}</b> ${images[currentImage].fullCaption}</p>`).effect("pulsate", "slow").addClass('.caption');
   // Read it for the user to notice the changes
-  responsiveVoice.speak(images[currentImage].fullCaption, 'US English Female');
+  responsiveVoice.speak(images[currentImage].fullCaption, 'UK English Female');
   // Call a new post
   resetCaption();
 }
@@ -459,7 +469,7 @@ function addPost() {
   let $likes = $(`<p class='likes'><b>${images[currentImage].likes} likes</b></p>`);
   $likes.appendTo($post);
   // Add the caption
-  let $caption = $(`<div class='caption'><p><b>${username}</b> ${images[currentImage].hiddenCaption}</p></div>`);
+  let $caption = $(`<div class='caption'><p><b>${username}</b> ${hiddenCaption}</p></div>`);
   $caption.appendTo($post);
   // // Add the comments
   // let $comment = $(`<p class='comment'><b>${trueUsername}</b> ${images[currentImage].comment}</p>`);

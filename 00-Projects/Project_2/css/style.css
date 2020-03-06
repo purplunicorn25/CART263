@@ -168,7 +168,7 @@ h1 {
   height: 350px;
   position: absolute;
   top: 40%;
-  left: 16.5%;
+  left: 3%;
 }
 
 .adjPool {
@@ -176,7 +176,7 @@ h1 {
   height: 350px;
   position: absolute;
   top: 40%;
-  left: 3%;
+  left: 16.5%;
 }
 
 .adjs {
@@ -185,6 +185,7 @@ h1 {
   margin: 5px;
   padding: 5px 10px 5px;
   user-select: none;
+  font-size: 14px;
 }
 
 .verbs {
@@ -193,6 +194,7 @@ h1 {
   margin: 5px;
   padding: 5px 10px 5px;
   user-select: none;
+  font-size: 14px;
 }
 
 .numPosts {
@@ -224,7 +226,7 @@ h1 {
 }
 
 .reported {
-  background-color: lightgray;
+  background-color: #efefef;
   color: red;
   width: 600px;
   height: 220px;
