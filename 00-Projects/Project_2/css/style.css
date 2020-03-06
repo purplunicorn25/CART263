@@ -223,6 +223,20 @@ h1 {
   text-align: center;
 }
 
+.reported {
+  background-color: lightgray;
+  color: red;
+  width: 600px;
+  height: 220px;
+  position: absolute;
+  top: 22%;
+  left: 20%;
+  text-align: justify;
+  border-style: solid;
+  border-width: 10px;
+  display: none;
+}
+
 #postButton {
   position: absolute;
   bottom: 8%;

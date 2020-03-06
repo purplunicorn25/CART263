@@ -53,7 +53,7 @@ let images = [{
     likes: 0,
     maxLikes: 123,
     followerProbability: 0.05,
-    followerSum: 1,
+    followersFluctuation: 1,
     fullCaptionE: 0
   },
   {
@@ -69,7 +69,7 @@ let images = [{
     likes: 0,
     maxLikes: 106,
     followerProbability: 0.05,
-    followerSum: 1
+    followersFluctuation: 1
   },
   {
     // Busts
@@ -84,7 +84,7 @@ let images = [{
     likes: 0,
     maxLikes: 92,
     followerProbability: 0.1,
-    followerSum: -1
+    followersFluctuation: -1
   }
 ];
 
@@ -93,10 +93,9 @@ let currentImage = 0;
 
 // GAME
 let playing = false;
-let gameOver = false;
 
 // USERNAME
-let username = 'xXPerfectGurlXx ';
+let username = 'xXPurfectKittyXx ';
 let trueUsername = 'Not_ListeningXO';
 
 // CAPTION
@@ -344,20 +343,33 @@ function updateScore() {
 
 // handleScore
 //
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// Handle the follower fluctuation and losing
 function handleScore() {
   // Get a random number
   let randomNumber = Math.random();
-  //
-  if (currentImage === images.length) {
-    followers -= 10;
-    gameOver = true;
-    //
-  } else if (randomNumber < images[currentImage].followerProbability) {
-    followers += images[currentImage].followerSum;
+  // Constrain the followers between a max and min
+  // While there are images
+  if (currentImage < images.length) {
+    // Uppdate the followers according to the images properties
+    if (randomNumber < images[currentImage].followerProbability) {
+      followers += images[currentImage].followersFluctuation;
+    }
+  } else { // When there are no more images drop the followers to 0 and call game over
+    if (followers > 0) {
+      followers -= 1;
+      // Call the report alert
+      endGame();
+    }
   }
-  //
+  // Rewrite the score
   updateScore();
+}
+
+// constrain
+//
+// Constrain the value of a number between a max and a min value
+function constrain(value, min, max) {
+  return Math.min(Math.max(value, min), max);
 }
 
 // resetCaption
@@ -365,20 +377,23 @@ function handleScore() {
 // Reset the caption editor with new words
 // Move currentImage by 1 to access the next picture
 function resetCaption() {
+  // Move to the next image
+  currentImage++;
   // Empty all the div containers
   $captionEditor.empty();
   $(".verbs").remove();
   $(".adjs").remove();
-  // Fill them up again with the content of the next post
-  displayCaptionEditor();
-  displayVerbs();
-  displayAdjs();
-  // Make sure they behave correctly
-  handleWords();
-  // Move to the next image
-  currentImage++;
-  // Add the new post to the page
-  setTimeout(addPost, 2000);
+  // Refill the container and call a new image if there are more
+  if (currentImage < images.length) {
+    // Fill them up again with the content of the next post
+    displayCaptionEditor();
+    displayVerbs();
+    displayAdjs();
+    // Make sure they behave correctly
+    handleWords();
+    // Add the new post to the page
+    setTimeout(addPost, 2000);
+  }
 }
 
 // PostProperties
@@ -446,9 +461,9 @@ function addPost() {
   // Add the caption
   let $caption = $(`<div class='caption'><p><b>${username}</b> ${images[currentImage].hiddenCaption}</p></div>`);
   $caption.appendTo($post);
-  // Add the comments
-  let $comment = $(`<p class='comment'><b>${trueUsername}</b> ${images[currentImage].comment}</p>`);
-  $comment.appendTo($post);
+  // // Add the comments
+  // let $comment = $(`<p class='comment'><b>${trueUsername}</b> ${images[currentImage].comment}</p>`);
+  // $comment.appendTo($post); // **TO BE ADDED LATER
 
   // DATE
   // Create an array for every month so they are printed as a string not numbers
@@ -470,4 +485,16 @@ function addPost() {
 // Add the new post to the posts array
 function addList($post) {
   posts.push(new PostProperties($post));
+}
+
+// endGame
+//
+// Display an alert saying that the account was reported
+function endGame() {
+  // Display the div
+  let $reported = $(".reported");
+  $reported.css("display", "block");
+  // Add the report text
+  $reported.html(`<h1>!! ${username} HAS <br> BEEN REPORTED !!</h1> <br><br><br><br><br><br><br><p>Your account has been reported, you don't have any followers anymore.</p><br><p>You suck.</p>`);
+
 }
