@@ -32,26 +32,19 @@
   <div id="player1">
     <div id="commandBoard">
       <div class="dropdown">
-        <button class="dropbtn">SPELLS</button>
+        <button class="dropbtn" id="spellButton">SPELLS &#129171;</button>
         <div class="dropdown-content">
-          <button href="#">Link 1</button>
-          <button href="#">Link 2</button>
-          <button href="#">Link 3</button>
+          <button>Link 3</button>
         </div>
       </div>
       <div class="dropdown">
-        <button class="dropbtn">COUNTER-SPELLS</button>
+        <button class="dropbtn">COUNTER-SPELLS &#129171;</button>
         <div class="dropdown-content">
-          <button href="#">Link 1</button>
-          <button href="#">Link 2</button>
-          <button href="#">Link 3</button>
         </div>
       </div>
     </div>
     <hr>
   </div>
-
-
 
   <div id="opponent1LifeBar">
     <div id="opponent1Life">
@@ -64,6 +57,32 @@
       <img src="assets/images/lightning.png" id="lightningP1" height="200%">
     </div>
   </div>
+
+  <!-- In front of the rest of the player1 screen at the beginning -->
+  <div id="startMenu">
+    <h1>COMPUTATIONAL WIZARD DUEL</h1>
+    <p>Instructions of instructions to instruct of the intructions must instruct.
+      Instructions of instructions to instruct of the intructions must instruct.
+      Instructions of instructions to instruct of the intructions must instruct.
+      Instructions of instructions to instruct of the intructions must instruct.
+      Instructions of instructions to instruct of the intructions must instruct.</p>
+    <label for="side">Choose a side</label>
+    <br>
+    <select name="side" id="side">
+      <option>Select Side</option>
+      <option>BLACK MAGIC</option>
+      <option>WHITE MAGIC</option>
+    </select>
+    <br><br>
+    <button>DRAW</button>
+    <div id="black">
+      <h1>MAGIC</h1>
+    </div>
+    <div id="white">
+      <h1>MAGIC</h1>
+    </div>
+  </div>
+
 </body>
 
 </html>

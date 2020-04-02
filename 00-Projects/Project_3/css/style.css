@@ -10,6 +10,68 @@ hr {
   margin-top: 2%;
 }
 
+h1 {
+  font-weight: normal;
+}
+
+p {
+  text-align: left;
+  font-size: 20px;
+}
+
+select {
+  width: 250px;
+  font-family: 'VT323', monospace;
+  font-size: 24px;
+  color: greenyellow;
+  background-color: inherit;
+  border-style: solid;
+  border-width: thin;
+  border-color: inherit;
+  letter-spacing: 5px;
+  appearance: block;
+  /* -webkit-appearance: none;
+  -moz-appearance: none; */
+}
+
+option {
+  color: greenyellow;
+  background-color: black;
+  font-family: 'VT323', monospace;
+  font-size: 24px;
+  letter-spacing: 5px;
+}
+
+#white {
+  width: 20%;
+  height: 20%;
+  background-color: white;
+  position: absolute;
+  bottom: 6%;
+  left: 39%;
+  /* display: none; */
+}
+
+#black {
+  width: 20%;
+  height: 20%;
+  position: absolute;
+  bottom: 6%;
+  left: 39%;
+}
+
+#startMenu {
+  width: 50%;
+  height: 70%;
+  background-color: black;
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  padding: 40px;
+  text-align: center;
+  /* display: none; */
+}
+
 #player1 {
   width: 50%;
   height: 70%;
@@ -89,6 +151,23 @@ hr {
   position: absolute;
   top: -50%;
   right: -8%;
+}
+
+button {
+  width: 100px;
+  margin-right: 8px;
+  border-style: solid;
+  border-width: thin;
+  border-color: inherit;
+  font-family: 'VT323', monospace;
+  font-size: 24px;
+  color: greenyellow;
+  background-color: inherit;
+}
+
+button:hover {
+  background-color: greenyellow;
+  color: black;
 }
 
 /* Dropdown Button */

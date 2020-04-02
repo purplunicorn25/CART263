@@ -1,27 +1,44 @@
-"description": "Computational Spells"
-"spells": {
-  "Control": {
-
-  },
-  "Virus": {
-
-  },
-  "Freeze": {
-
-  },
-  "Saturate Internet Bandwidth": {
-
-  },
-  "Overheating": {
-
-  },
-  "Unplug": {
-
-  },
-  "Electric Wave": {
-
-  },
-  "Blue Screen of Death": {
-
-  }
+{
+  "description": "Computational Spells, counterSpells & Items",
+  "spells": [{
+      "id": "control",
+      "name": "Take control of your opponent's commands",
+      "points": ["-10", "-12", "-14", "-16"]
+    },
+    {
+      "id": "blueScreen",
+      "name": "Blue Screen of Death",
+      "points": ["-50"]
+    },
+    {
+      "id": "virus",
+      "name": "Virus Reached Hard Drive",
+      "points": ["-30"]
+    },
+    {
+      "id": "freeze",
+      "name": "Frozen Screen",
+      "point": ["-15"]
+    },
+    {
+      "id": "saturate",
+      "name": "Saturate Internet Bandwidth",
+      "points": ["-10"]
+    },
+    {
+      "id": "overheat",
+      "name": "Overheating Hardware",
+      "points": ["-10"]
+    },
+    {
+      "id": "unplug",
+      "name": "Unplug Computer",
+      "points": ["-10"]
+    },
+    {
+      "id": "wave",
+      "name": "Massive Electric Wave",
+      "points": ["-20"]
+    }
+  ]
 }
