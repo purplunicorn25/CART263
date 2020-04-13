@@ -66,20 +66,30 @@
       Instructions of instructions to instruct of the intructions must instruct.
       Instructions of instructions to instruct of the intructions must instruct.
       Instructions of instructions to instruct of the intructions must instruct.</p>
-    <label for="side">Choose a side</label>
+    <br>
+    <label for="side">Select a side</label>
     <br>
     <select name="side" id="side">
-      <option>Select Side</option>
-      <option>BLACK MAGIC</option>
-      <option>WHITE MAGIC</option>
+      <option value="black">BLACK MAGIC</option>
+      <option value="white">WHITE MAGIC</option>
     </select>
     <br><br>
-    <button>DRAW</button>
-    <div id="black">
+    <button id="draw">DRAW</button>
+    <div id="blackBox">
       <h1>MAGIC</h1>
     </div>
-    <div id="white">
+    <div id="whiteBox">
       <h1>MAGIC</h1>
+    </div>
+    <span id="drawResult"></span>
+    <div id="pre-duel">
+      <div id="prepare"></div>
+      <button class='bow'>BOW</button>
+      <button class='bow'>OR DON'T</button>
+      <div id="ready"></div>
+      <p class="start">When your ready:</p>
+      <br>
+      <button class="start">START</button>
     </div>
   </div>
 
