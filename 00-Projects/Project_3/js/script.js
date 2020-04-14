@@ -4,6 +4,7 @@
 
 Computational Wizard Duel
 Anne Boutet
+(✿◠‿◠)
 
 DESCRIPTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -19,11 +20,11 @@ let spells;
 let counterSpells = [];
 let items = [];
 
-// Life of player and opponent in terms of battery level
-let playerPower;
-let opponentPower;
+// Life of player and opponent in terms of battery level (HP)
+let playerHP = 100;
+let opponentHP = 100;
 
-//
+// setup
 //
 //
 function setup() {
@@ -33,8 +34,11 @@ function setup() {
     .fail(dataError);
   // Draw to find out who starts the game
   $("#draw").click(flicker);
+  // Display battery power (HP)
+  updateBatteryPower();
   //////////////////////////////////////////////
   $("#startMenu").hide();
+
 }
 
 // dataLoaded
@@ -75,6 +79,20 @@ function displaySpells() {
   //   //
   //   $("#itemButtons").append(`<button>${items[i].name}</button>`);
   // }
+}
+
+// updateBatteryPower
+//
+//
+function updateBatteryPower() {
+  //
+  $("#player1LifeBarText").append(`BATTERY POWER: ${playerHP}%`);
+  //
+  $("#player1Life").css("width", `${playerHP}%`);
+  //
+  $("#opponent1LifeBarText").append(`BATTERY POWER: ${opponentHP}%`);
+  //
+  $("#opponent1Life").css("width", `${opponentHP}%`);
 }
 
 // flicker

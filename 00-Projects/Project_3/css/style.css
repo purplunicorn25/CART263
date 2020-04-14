@@ -7,6 +7,7 @@ body {
 
 hr {
   border-color: greenyellow;
+  margin-top: 20px;
 }
 
 h1 {
@@ -125,6 +126,19 @@ option {
   width: 50%;
 }
 
+#log {
+  height: 75%;
+  width: 90%;
+  position: absolute;
+}
+
+#hp {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  margin: 5px;
+}
+
 #player1LifeBar {
   width: 30%;
   height: 2%;
@@ -139,7 +153,7 @@ option {
 #player1Life {
   width: 100%;
   height: 100%;
-  background-color: lime;
+  background-color: greenyellow;
 }
 
 #opponent1 {
@@ -161,6 +175,11 @@ option {
   position: absolute;
   left: 55%;
   top: 8%;
+}
+
+.lifeBarText {
+  color: black;
+  margin-top: 2%;
 }
 
 #opponent1Life {
