@@ -2,7 +2,7 @@
   "description": "Computational Spells, counterSpells & Items",
   "spells": [{
       "id": "control",
-      "name": "Take control of your opponent's commands",
+      "name": "Take control",
       "points": ["-10", "-12", "-14", "-16"]
     },
     {
@@ -12,12 +12,12 @@
     },
     {
       "id": "virus",
-      "name": "Virus Reached Hard Drive",
+      "name": "Virus to Hard Drive",
       "points": ["-30"]
     },
     {
       "id": "freeze",
-      "name": "Frozen Screen",
+      "name": "Freeze Screen",
       "point": ["-15"]
     },
     {
@@ -27,7 +27,7 @@
     },
     {
       "id": "overheat",
-      "name": "Overheating Hardware",
+      "name": "Overheat Hardware",
       "points": ["-10"]
     },
     {
@@ -37,8 +37,18 @@
     },
     {
       "id": "wave",
-      "name": "Massive Electric Wave",
+      "name": "Send Massive Electric Wave",
       "points": ["-20"]
     }
-  ]
+  ],
+  "counterSpells": [{
+    "id": "firewall",
+    "name": "Firewall",
+    "points": ["-10", "-12", "-14", "-16"]
+  }],
+  "items": [{
+    "id": "generator",
+    "name": "Tiny Electric Generator",
+    "points": ["+10"]
+  }]
 }
