@@ -247,15 +247,15 @@ button:hover {
 /* Links inside the dropdown */
 .dropdown-content button {
   font-family: 'VT323', monospace;
-  font-size: 24px;
+  font-size: 22px;
   background-color: black;
   color: greenyellow;
   padding: 6px 10px;
   text-decoration: none;
-  display: block;
-  width: 375px;
+  width: 330px;
   border-style: none;
   text-align: left;
+  display: inline-block;
 }
 
 /* Change color of dropdown links on hover */
@@ -275,7 +275,28 @@ button:hover {
   color: black;
 }
 
-.points {
+.content-info {
+  display: inline-block;
+  margin-left: 2%;
+}
+
+.dropdown-info {
+  display: none;
   position: absolute;
-  right: 5%;
+  left: 120px;
+  background-color: black;
+  padding: 10px;
+  color: greenyellow;
+  border-style: solid;
+  border-color: greenyellow;
+  border-width: thin;
+  width: 150px;
+}
+
+.content-info:hover {
+  color: greenyellow;
+}
+
+.content-info:hover .dropdown-info {
+  display: block;
 }

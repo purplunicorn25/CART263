@@ -1,54 +1,39 @@
 {
   "description": "Computational Spells, counterSpells & Items",
   "spells": [{
-      "id": "control",
-      "name": "Take control",
-      "points": ["-10", "-12", "-14", "-16"]
-    },
-    {
-      "id": "blueScreen",
-      "name": "Blue Screen of Death",
-      "points": ["-50"]
-    },
-    {
-      "id": "virus",
-      "name": "Virus to Hard Drive",
-      "points": ["-30"]
-    },
-    {
-      "id": "freeze",
-      "name": "Freeze Screen",
-      "point": ["-15"]
+      "id": "unplug",
+      "name": "Unplug Computer",
+      "points": ["-10"],
+      "effects": "Deals some damage.",
+      "amount": "∞"
     },
     {
       "id": "saturate",
       "name": "Saturate Internet Bandwidth",
-      "points": ["-10"]
+      "points": ["-10"],
+      "effects": "Deals some damage, 25% chance of critical hit.",
+      "amount": "10"
     },
     {
-      "id": "overheat",
-      "name": "Overheat Hardware",
-      "points": ["-10"]
-    },
-    {
-      "id": "unplug",
-      "name": "Unplug Computer",
-      "points": ["-10"]
-    },
-    {
-      "id": "wave",
-      "name": "Send Massive Electric Wave",
-      "points": ["-20"]
+      "id": "control",
+      "name": "Take control",
+      "points": ["-10", "-12", "-14", "-16"],
+      "effects": "Your opponent cannot play next turn, but gets two random items.",
+      "amount": "2"
     }
   ],
   "counterSpells": [{
     "id": "firewall",
     "name": "Firewall",
-    "points": ["-10", "-12", "-14", "-16"]
+    "points": ["-10", "-12", "-14", "-16"],
+    "effects": "Reduces upcoming damage by 40%.",
+    "amount": "∞"
   }],
   "items": [{
     "id": "generator",
     "name": "Tiny Electric Generator",
-    "points": ["+10"]
+    "points": ["+10"],
+    "effects": "Restores some battery power.",
+    "amount": "∞"
   }]
 }

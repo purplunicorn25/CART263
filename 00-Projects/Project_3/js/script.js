@@ -38,6 +38,7 @@ function setup() {
   updateBatteryPower();
   //////////////////////////////////////////////
   $("#startMenu").hide();
+  player1round();
 
 }
 
@@ -67,31 +68,55 @@ function displaySpells() {
   //
   for (let i = 0; i < spells.length; i++) {
     //
-    $("#spellButtons").append(`<button>${spells[i].name}</button>`);
+    $("#spellButtons").append(`<button>${spells[i].name} (${spells[i].amount})<div class='content-info' id='infoS${i}'>&#9432;</div></button>`);
+    //
+    $(`#infoS${i}`).append(`<div class="dropdown-info">${spells[i].effects}</div>`);
   }
   //
   for (let i = 0; i < counterSpells.length; i++) {
     //
-    $("#counterSpellButtons").append(`<button>${counterSpells[i].name}</button>`);
+    $("#counterSpellButtons").append(`<button>${counterSpells[i].name} (${counterSpells[i].amount})<div class='content-info' id='infoCS${i}'>&#9432;</div></button>`);
+    //
+    $(`#infoCS${i}`).append(`<div class="dropdown-info">${counterSpells[i].effects}</div>`);
   }
-  // //
-  // for (let i = 0; i < items.length; i++) {
-  //   //
-  //   $("#itemButtons").append(`<button>${items[i].name}</button>`);
-  // }
+  //
+  for (let i = 0; i < items.length; i++) {
+    //
+    $("#itemButtons").append(`<button>${items[i].name} (${items[i].amount})<div class='content-info' id='infoI${i}'>&#9432;</div></button>`);
+    //
+    $(`#infoI${i}`).append(`<div class="dropdown-info">${items[i].effects}</div>`);
+  }
+}
+
+// disableSpells
+//
+//
+function disableSpells() {
+  //
+  $(".dropdown-content").css("display", "none");
+}
+
+// enableSpells
+//
+//
+function enableSpells() {
+  //
+  $("dropdown-content").css("display", "block");
 }
 
 // updateBatteryPower
 //
-//
+// Display the player and opponent battery power, update after events
 function updateBatteryPower() {
-  //
+  // Display player's HP in the log
+  $("#hp").append(`BATTERY POWER: ${playerHP}%`);
+  // Display player's HP below the life bar
   $("#player1LifeBarText").append(`BATTERY POWER: ${playerHP}%`);
-  //
+  // Adjust the width of the life bar accordingly
   $("#player1Life").css("width", `${playerHP}%`);
-  //
+  // Display opponent's HP below the life bar
   $("#opponent1LifeBarText").append(`BATTERY POWER: ${opponentHP}%`);
-  //
+  // Adjust the width of the life bar accordingly
   $("#opponent1Life").css("width", `${opponentHP}%`);
 }
 
@@ -174,7 +199,8 @@ function beginDuel() {
 //
 //
 function player1round() {
-  console.log("player turn");
+  //
+  enableSpells();
 }
 
 /// ??????????????????????????????????????????????????????
