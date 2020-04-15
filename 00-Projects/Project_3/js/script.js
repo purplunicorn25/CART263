@@ -1,7 +1,6 @@
 "use strict";
 
 /********************************************************************
-
 Computational Wizard Duel
 Anne Boutet
 (✿◠‿◠)
@@ -39,7 +38,6 @@ function setup() {
   //////////////////////////////////////////////
   $("#startMenu").hide();
   player1round();
-
 }
 
 // dataLoaded
@@ -63,27 +61,21 @@ function dataError(request, textStatus, error) {
 
 // displaySpells
 //
-//
+// Display the spells as buttons, the amount of spells left and info button
 function displaySpells() {
-  //
+  // For every spells make a button with the right ID, the spell's name, and an info bubble
   for (let i = 0; i < spells.length; i++) {
-    //
-    $("#spellButtons").append(`<button>${spells[i].name} (${spells[i].amount})<div class='content-info' id='infoS${i}'>&#9432;</div></button>`);
-    //
+    $("#spellButtons").append(`<button id='${spells[i].id}'>${spells[i].name} (${spells[i].amount})<div class='content-info' id='infoS${i}'>&#9432;</div></button>`);
     $(`#infoS${i}`).append(`<div class="dropdown-info">${spells[i].effects}</div>`);
   }
-  //
+  // For every counter-spells make a button with the right ID, the counter-spell's name, and an info bubble
   for (let i = 0; i < counterSpells.length; i++) {
-    //
-    $("#counterSpellButtons").append(`<button>${counterSpells[i].name} (${counterSpells[i].amount})<div class='content-info' id='infoCS${i}'>&#9432;</div></button>`);
-    //
+    $("#counterSpellButtons").append(`<button id='${counterSpells[i].id}'>${counterSpells[i].name} (${counterSpells[i].amount})<div class='content-info' id='infoCS${i}'>&#9432;</div></button>`);
     $(`#infoCS${i}`).append(`<div class="dropdown-info">${counterSpells[i].effects}</div>`);
   }
-  //
+  // For every items make a button with the right ID, the item's name, and an info bubble
   for (let i = 0; i < items.length; i++) {
-    //
-    $("#itemButtons").append(`<button>${items[i].name} (${items[i].amount})<div class='content-info' id='infoI${i}'>&#9432;</div></button>`);
-    //
+    $("#itemButtons").append(`<button id='${items[i].id}'>${items[i].name} (${items[i].amount})<div class='content-info' id='infoI${i}'>&#9432;</div></button>`);
     $(`#infoI${i}`).append(`<div class="dropdown-info">${items[i].effects}</div>`);
   }
 }
@@ -201,9 +193,19 @@ function beginDuel() {
 function player1round() {
   //
   enableSpells();
+  //
+  $("#unplug").click(unplug);
+
 }
 
-/// ??????????????????????????????????????????????????????
+//
+//
+//
+function unplug() {
+  console.log("unplug");
+}
+
+/// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // getRandomElement
 //
 // Get a random element from a specific array
