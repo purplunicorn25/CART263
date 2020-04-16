@@ -3,7 +3,7 @@
   "spells": [{
       "id": "unplug",
       "name": "Unplug Computer",
-      "points": ["-10"],
+      "points": [8],
       "effects": "Deals some damage.",
       "amount": "∞"
     },

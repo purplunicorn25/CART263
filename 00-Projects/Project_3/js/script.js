@@ -19,6 +19,12 @@ let spells;
 let counterSpells = [];
 let items = [];
 
+//
+let actionIndex = 0;
+
+//
+let damageAmount;
+
 // Life of player and opponent in terms of battery level (HP)
 let playerHP = 100;
 let opponentHP = 100;
@@ -37,7 +43,6 @@ function setup() {
   updateBatteryPower();
   //////////////////////////////////////////////
   $("#startMenu").hide();
-  player1round();
 }
 
 // dataLoaded
@@ -52,65 +57,36 @@ function dataLoaded(data) {
   displaySpells();
 }
 
-// dataError
-//
-//
-function dataError(request, textStatus, error) {
-  console.error(error);
-}
-
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // displaySpells
 //
 // Display the spells as buttons, the amount of spells left and info button
 function displaySpells() {
   // For every spells make a button with the right ID, the spell's name, and an info bubble
   for (let i = 0; i < spells.length; i++) {
-    $("#spellButtons").append(`<button id='${spells[i].id}'>${spells[i].name} (${spells[i].amount})<div class='content-info' id='infoS${i}'>&#9432;</div></button>`);
+    $("#spellButtons").append(`<button class="spellsActions" id='${spells[i].id}'>${spells[i].name} (${spells[i].amount})<div class='content-info' id='infoS${i}'>&#9432;</div></button>`);
     $(`#infoS${i}`).append(`<div class="dropdown-info">${spells[i].effects}</div>`);
   }
   // For every counter-spells make a button with the right ID, the counter-spell's name, and an info bubble
   for (let i = 0; i < counterSpells.length; i++) {
-    $("#counterSpellButtons").append(`<button id='${counterSpells[i].id}'>${counterSpells[i].name} (${counterSpells[i].amount})<div class='content-info' id='infoCS${i}'>&#9432;</div></button>`);
+    $("#counterSpellButtons").append(`<button class="counterSpellsActions" id='${counterSpells[i].id}'>${counterSpells[i].name} (${counterSpells[i].amount})<div class='content-info' id='infoCS${i}'>&#9432;</div></button>`);
     $(`#infoCS${i}`).append(`<div class="dropdown-info">${counterSpells[i].effects}</div>`);
   }
   // For every items make a button with the right ID, the item's name, and an info bubble
   for (let i = 0; i < items.length; i++) {
-    $("#itemButtons").append(`<button id='${items[i].id}'>${items[i].name} (${items[i].amount})<div class='content-info' id='infoI${i}'>&#9432;</div></button>`);
+    $("#itemButtons").append(`<button class="itemsActions" id='${items[i].id}'>${items[i].name} (${items[i].amount})<div class='content-info' id='infoI${i}'>&#9432;</div></button>`);
     $(`#infoI${i}`).append(`<div class="dropdown-info">${items[i].effects}</div>`);
   }
+  // !!!!!!! COULD BE DONE JUST WITH JQUERY SINCE NOW THE CSS IS WORKING OKAY WITH JQUERY BUTTONS !!!!!!!!!!!!
+  // Turn them all into jquery buttons
+  $(".spellsActions").button();
+  $(".counterSpellsActions").button();
+  $(".itemsActions").button();
+
+  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  player1round();
 }
 
-// disableSpells
-//
-//
-function disableSpells() {
-  //
-  $(".dropdown-content").css("display", "none");
-}
-
-// enableSpells
-//
-//
-function enableSpells() {
-  //
-  $("dropdown-content").css("display", "block");
-}
-
-// updateBatteryPower
-//
-// Display the player and opponent battery power, update after events
-function updateBatteryPower() {
-  // Display player's HP in the log
-  $("#hp").append(`BATTERY POWER: ${playerHP}%`);
-  // Display player's HP below the life bar
-  $("#player1LifeBarText").append(`BATTERY POWER: ${playerHP}%`);
-  // Adjust the width of the life bar accordingly
-  $("#player1Life").css("width", `${playerHP}%`);
-  // Display opponent's HP below the life bar
-  $("#opponent1LifeBarText").append(`BATTERY POWER: ${opponentHP}%`);
-  // Adjust the width of the life bar accordingly
-  $("#opponent1Life").css("width", `${opponentHP}%`);
-}
 
 // flicker
 //
@@ -191,18 +167,136 @@ function beginDuel() {
 //
 //
 function player1round() {
+  // Enable the player to select its next action
+  enableActions();
+  // All possible actions do similar effects
+  // The player can only select one before all others are disabled
+  // INDEX 0
+  $("#unplug").click(() => {
+    console.log("clicked");
+    console.log($(".spellsActions"));
+    actionIndex = 0;
+    disableActions();
+    dealDamage();
+    setTimeout(endPlayerTurn, 1000);
+  });
   //
-  enableSpells();
+  $("#saturate").click(saturate);
   //
-  $("#unplug").click(unplug);
-
+  $("#control").click(control);
 }
 
 //
 //
 //
-function unplug() {
-  console.log("unplug");
+function endPlayerTurn() {
+  //
+  let actionSummary = `You have used ${spells[actionIndex].name} and your opponent lost ${damageAmount}% of its battery power.`;
+  //
+  $("#recap").append(`<p>${actionSummary}</p>`);
+  //
+  damageAmount = 0;
+  //
+  updateScroll();
+  //
+  opponentRound();
+}
+
+// dealDamage
+//
+//
+function dealDamage() {
+  //
+  damageAmount = getRandomElement(spells[actionIndex].points);
+  //
+  opponentHP -= damageAmount;
+  //
+  updateBatteryPower();
+  //
+  $("#opponent1LifeBarText").effect('pulsate');
+}
+
+// saturate
+//
+//
+function saturate() {
+  console.log("saturate");
+}
+
+// control
+//
+//
+function control() {
+  console.log("control");
+}
+
+//
+//
+//
+function opponentRound() {
+  console.log("opponent");
+  // opponentHP = 100;
+  // updateBatteryPower();
+  setTimeout(endOpponentRound, 1000);
+}
+
+//
+// ??????????????????????????????????????????????????????????????????????????????????????
+// Whenever I call player1round again the function doubles...
+function endOpponentRound() {
+  player1round();
+}
+
+//
+//
+//
+function updateScroll() {
+  //
+  let log = document.getElementById("recap");
+  log.scrollTop = log.scrollHeight;
+}
+
+// disableActions
+//
+//
+function disableActions() {
+  //
+  $(".spellsActions").button("disable");
+  $(".counterSpellsActions").button("disable");
+  $(".itemsActions").button("disable");
+}
+
+// enableActions
+//
+//
+function enableActions() {
+  //
+  $(".spellsActions").button("enable");
+  $(".counterSpellsActions").button("enable");
+  $(".itemsActions").button("enable");
+}
+
+// updateBatteryPower
+//
+// Display the player and opponent battery power, update after events
+function updateBatteryPower() {
+  // Display player's HP in the log
+  $("#hp").text(`BATTERY POWER: ${playerHP}%`);
+  // Display player's HP below the life bar
+  $("#player1LifeBarText").text(`BATTERY POWER: ${playerHP}%`);
+  // Adjust the width of the life bar accordingly
+  $("#player1Life").css("width", `${playerHP}%`);
+  // Display opponent's HP below the life bar
+  $("#opponent1LifeBarText").text(`BATTERY POWER: ${opponentHP}%`);
+  // Adjust the width of the life bar accordingly
+  $("#opponent1Life").css("width", `${opponentHP}%`);
+}
+
+// dataError
+//
+//
+function dataError(request, textStatus, error) {
+  console.error(error);
 }
 
 /// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
