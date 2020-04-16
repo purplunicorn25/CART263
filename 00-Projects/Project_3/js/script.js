@@ -20,10 +20,12 @@ let counterSpells = [];
 let items = [];
 
 //
-let actionIndex = 0;
+let activeActionIndex = 0;
 
 //
 let damageAmount;
+let critMultiplier = [1.5, 1.6, 1.7, 1.8];
+let crit = false;
 
 // Life of player and opponent in terms of battery level (HP)
 let playerHP = 100;
@@ -41,6 +43,8 @@ function setup() {
   $("#draw").click(flicker);
   // Display battery power (HP)
   updateBatteryPower();
+  // Always check if spells amount more then 0
+  setInterval(checkSpellAmount, 100);
   //////////////////////////////////////////////
   $("#startMenu").hide();
 }
@@ -82,11 +86,9 @@ function displaySpells() {
   $(".spellsActions").button();
   $(".counterSpellsActions").button();
   $(".itemsActions").button();
-
   // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  player1round();
+  playerRound();
 }
-
 
 // flicker
 //
@@ -124,18 +126,19 @@ function chooseFirstPlayer() {
     // Display who starts
     $("#drawResult").text("YOU START!");
     // Start the player round
-    player1round();
+    playerRound();
     // Call the pre-duel instructions
     setTimeout(beginDuel, 1500);
   } else {
     // Display who starts
     $("#drawResult").text("YOUR OPPONENT STARTS...");
     // Start the opponent round
-    // opponent1round();
+    opponentRound();
     // Call the pre-duel instructions
     setTimeout(beginDuel, 1500);
   }
 }
+
 
 // beginDuel
 //
@@ -163,25 +166,40 @@ function beginDuel() {
   })
 }
 
-// player1round
+// playerRound
 //
 //
-function player1round() {
+function playerRound() {
   // Enable the player to select its next action
   enableActions();
   // All possible actions do similar effects
   // The player can only select one before all others are disabled
+
   // INDEX 0
   $("#unplug").click(() => {
-    console.log("clicked");
-    console.log($(".spellsActions"));
-    actionIndex = 0;
-    disableActions();
+    // Set the according index
+    activeActionIndex = 0;
+    // Once pressed disable all buttons
+    // disableActions();
+    // ACTIONS ->
     dealDamage();
-    setTimeout(endPlayerTurn, 1000);
+    // End player round
+    setTimeout(endPlayerRound, 1000);
   });
-  //
-  $("#saturate").click(saturate);
+
+  // INDEX 1
+  $("#saturate").click(() => {
+    // Set the according index
+    activeActionIndex = 1;
+    // Reduce the spell amount by 1
+    reduceSpellAmount();
+    // Once pressed disable all buttons
+    // disableActions();
+    // ACTIONS ->
+    criticalDamage();
+    // End player round
+    setTimeout(endPlayerRound, 1000);
+  });
   //
   $("#control").click(control);
 }
@@ -189,15 +207,10 @@ function player1round() {
 //
 //
 //
-function endPlayerTurn() {
-  //
-  let actionSummary = `You have used ${spells[actionIndex].name} and your opponent lost ${damageAmount}% of its battery power.`;
-  //
-  $("#recap").append(`<p>${actionSummary}</p>`);
+function endPlayerRound() {
+  playerHistory();
   //
   damageAmount = 0;
-  //
-  updateScroll();
   //
   opponentRound();
 }
@@ -206,21 +219,40 @@ function endPlayerTurn() {
 //
 //
 function dealDamage() {
-  //
-  damageAmount = getRandomElement(spells[actionIndex].points);
-  //
+  // Deal the spell damage
+  damageAmount = getRandomElement(spells[activeActionIndex].points);
+  // Apply the damage to the opponent
   opponentHP -= damageAmount;
-  //
+  // Update the battery power of both wizards
   updateBatteryPower();
-  //
+  // Animate the life bar text of the opponent
   $("#opponent1LifeBarText").effect('pulsate');
 }
 
-// saturate
-//
-//
-function saturate() {
-  console.log("saturate");
+// criticalDamage
+// ????????????????????????????????????????????????????????
+// Chance of critical damage, if not regular damage is applied
+function criticalDamage() {
+  // Define a random number
+  let randomNumber = Math.random();
+  // If the random number is smaller
+  if (randomNumber < spells[activeActionIndex].criticalChance) {
+    // Deal the spell damage multiplied by the random critMultiplier value
+    damageAmount = getRandomElement(spells[activeActionIndex].points) * getRandomElement(critMultiplier);
+    // Apply the damage to the opponent
+    opponentHP -= damageAmount;
+    // For the action recap, crit is true
+    crit = true;
+  } else {
+    // Deal the spell damage
+    damageAmount = getRandomElement(spells[activeActionIndex].points);
+    // Apply the damage to the opponent
+    opponentHP -= damageAmount;
+  }
+  // Update the battery power of both wizards
+  updateBatteryPower();
+  // Animate the life bar text of the opponent
+  $("#opponent1LifeBarText").effect('pulsate');
 }
 
 // control
@@ -240,27 +272,18 @@ function opponentRound() {
   setTimeout(endOpponentRound, 1000);
 }
 
-//
+// endOpponentRound
 // ??????????????????????????????????????????????????????????????????????????????????????
-// Whenever I call player1round again the function doubles...
+// Whenever I call playerRound again the function doubles...
 function endOpponentRound() {
-  player1round();
-}
-
-//
-//
-//
-function updateScroll() {
-  //
-  let log = document.getElementById("recap");
-  log.scrollTop = log.scrollHeight;
+  // playerRound();
 }
 
 // disableActions
 //
-//
+// Disable the player's action buttons
 function disableActions() {
-  //
+  // Disable every section seperatly
   $(".spellsActions").button("disable");
   $(".counterSpellsActions").button("disable");
   $(".itemsActions").button("disable");
@@ -268,12 +291,63 @@ function disableActions() {
 
 // enableActions
 //
-//
+// Enable the player's action buttons
 function enableActions() {
-  //
+  // Enable every section seperatly
   $(".spellsActions").button("enable");
   $(".counterSpellsActions").button("enable");
   $(".itemsActions").button("enable");
+}
+
+// reduceSpellAmount
+//
+// Remove 1 to the used spell amount
+function reduceSpellAmount() {
+  // Reduce one to the amount
+  spells[activeActionIndex].amount -= 1;
+  // Change the text of the button
+  $(`#${spells[activeActionIndex].id}`).text(`${spells[activeActionIndex].name} (${spells[activeActionIndex].amount})`);
+}
+
+// checkSpellAmount
+//
+// Check of the spell is still available, if not disable the button
+function checkSpellAmount() {
+  // Check if it's amount is equal to 0
+  if (spells[activeActionIndex].amount === 0) {
+    // Disable the according button
+    $(`#${spells[activeActionIndex].id}`).button("disable");
+  }
+}
+
+// history
+//
+// Display the most recent action
+function playerHistory() {
+  //
+  let actionSummary;
+  // Critical damage action
+  if (crit === true) {
+    actionSummary = `*CRITICAL DAMAGE* YOU have used ${spells[activeActionIndex].name} and your OPPONENT lost ${damageAmount}% of its battery power.`;
+    crit = false;
+  }
+  // Regular damage action
+  else {
+    actionSummary = `YOU have used ${spells[activeActionIndex].name} and your OPPONENT lost ${damageAmount}% of its battery power.`;
+  }
+  // Display the action recap in the match history
+  $("#recap").append(`<p>${actionSummary}</p>`);
+  // Adjust the overflow to see what was just added without scrolling
+  updateScroll();
+}
+
+// updateScroll
+//
+// Show the last added action recap
+function updateScroll() {
+  // Scroll to the bottom of the recap div
+  let log = document.getElementById("recap");
+  log.scrollTop = log.scrollHeight;
 }
 
 // updateBatteryPower
@@ -294,12 +368,12 @@ function updateBatteryPower() {
 
 // dataError
 //
-//
+// If the JSON file did not load correctly show an error
 function dataError(request, textStatus, error) {
+  // Display the error in the console
   console.error(error);
 }
 
-/// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // getRandomElement
 //
 // Get a random element from a specific array
