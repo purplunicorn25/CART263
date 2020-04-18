@@ -4,6 +4,7 @@ body {
   font-size: 24px;
   color: greenyellow;
   overflow: hidden;
+  background-color: lightgray;
 }
 
 hr {
@@ -155,6 +156,7 @@ option {
 }
 
 #playerLifeBar {
+  background-color: white;
   width: 30%;
   height: 2%;
   border-color: black;
@@ -182,6 +184,7 @@ option {
 }
 
 #opponentLifeBar {
+  background-color: white;
   width: 15%;
   height: 1.5%;
   border-color: black;

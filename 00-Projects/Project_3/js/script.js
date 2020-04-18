@@ -15,7 +15,7 @@ DESCRIPTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 $(document).ready(setup);
 
 //
-const CHECK_INTERVAL = 1;
+const CHECK_INTERVAL = 200;
 
 // Attacks, Counter-Attacks, and Items
 let spells;
@@ -216,8 +216,25 @@ function playerRound() {
 
   // SPELLS
   // Unplug deals damage (unlimited)
-  $("#unplug").one("click", () => {
-    applySpell(0, [dealDamage(opponent)], true, false, false)
+  $("#unplug").one("click", (event) => {
+    applySpell(0, [{
+      function: dealDamage,
+      agent: opponent
+    }], true, false, false)
+    // Prevents effects to double
+    event.stopImmediatePropagation();
+  });
+  // Saturate deals damage with chance of critical strike (limited)
+  $("#saturate").one("click", (event) => {
+    applySpell(1, [{
+      function: criticalDamage,
+      agent: opponent
+    }, {
+      function: reduceSpellAmount,
+      agent: player
+    }], true, false, false)
+    // Prevents effects to double
+    event.stopImmediatePropagation();
   });
 }
 
@@ -231,7 +248,7 @@ function applySpell(spellIndex, effects, isSpell, isCounterSpell, isItem) {
   disableActions();
   // Apply all the according actions
   for (let i = 0; i < effects.length; i++) {
-    effects[i];
+    effects[i].function(effects[i].agent);
   }
   // Start the opponent's round
   setTimeout(endPlayerRound, 1000);
@@ -243,15 +260,12 @@ function applySpell(spellIndex, effects, isSpell, isCounterSpell, isItem) {
 
 // endPlayerRound
 //
-//
+// Display action recap and start next round
 function endPlayerRound() {
   // Display the most recent action in the match history
   history(player);
-  // Reinitialize effects' amount
-  damageAmount = 0;
-  healAmount = 0;
   // Start the opponent round with a somewhat random delay so its not immediate
-  setTimeout(opponentRound, Math.random() * 3000);
+  setTimeout(opponentRound, Math.random() * 5000);
 }
 
 // opponentRound
@@ -261,7 +275,7 @@ function opponentRound() {
   // Choose a random spell in the spellBook
   opponent.spell = getRandomElement(spellBook);
   // Set the correct index
-  activeActionIndex = opponent.spell.index;
+  activeActionIndex = opponent.spell.jsonIndex;
   // Apply its effects
   for (let i = 0; i < opponent.spell.effects.length; i++) {
     opponent.spell.effects[i](opponent.spell.agent[i]);
@@ -276,7 +290,7 @@ function opponentRound() {
 
 // endOpponentRound
 //
-// Whenever I call playerRound again the function doubles...
+// Display action recap and start next round
 function endOpponentRound() {
   // Display the most recent action in the match history
   history(opponent);
@@ -289,8 +303,7 @@ function endOpponentRound() {
 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // The agent is the one that lost
 function endgame(agent) {
-  let loser = agent;
-  console.log(loser.name + " lost")
+  console.log(agent.name + " lost")
 }
 
 // disableActions
@@ -374,13 +387,13 @@ function updateScroll() {
 // Display the player and opponent battery power, update after events
 function updateBatteryPower() {
   // Display player's HP in the log
-  $("#hp").text(`BATTERY POWER: ${player.hp}%`);
+  $("#hp").text(`BATTERY POWER: ${player.hp.toFixed(1)}%`);
   // Display player's HP below the life bar
-  $("#playerLifeBarText").text(`BATTERY POWER: ${player.hp}%`);
+  $("#playerLifeBarText").text(`BATTERY POWER: ${player.hp.toFixed(1)}%`);
   // Adjust the width of the life bar accordingly
   $("#playerLife").css("width", `${player.hp}%`);
   // Display opponent's HP below the life bar
-  $("#opponentLifeBarText").text(`BATTERY POWER: ${opponent.hp}%`);
+  $("#opponentLifeBarText").text(`BATTERY POWER: ${opponent.hp.toFixed(1)}%`);
   // Adjust the width of the life bar accordingly
   $("#opponentLife").css("width", `${opponent.hp}%`);
 }
@@ -389,10 +402,16 @@ function updateBatteryPower() {
 //
 // Check of the spell is still available, if not disable the button
 function checkSpellAmount() {
-  // Check if it's amount is equal to 0
-  if (spells[activeActionIndex].amount < 0) {
-    // Disable the according button
-    $(`#${spells[activeActionIndex].id}`).button("disable");
+  // FOR PLAYER -> Check if it's amount is equal to 0
+  for (let i = 0; i < spells.length; i++) {
+    if (spells[i].amount === 0) {
+      // Disable the according button
+      $(`#${spells[i].id}`).button("disable");
+    }
+  }
+  // FOR OPPONENT -> Check if it's amount is equal to 0
+  if (opponent.spell.amount === 0) {
+    console.log("empty");
   }
 }
 
@@ -437,16 +456,22 @@ function getRandomElement(array) {
   return element;
 }
 
+//
+//
 // SPELLS, COUNTERSPELLS & ITEMS
+//
+//
 
 // createSpellBook
 //
 // An array in which all the spells are stored
 // Only used by opponent to get a random spell in its turn
 function createSpellBook() {
+  let test = [1, 2, 3, 4, 5, 6, 7];
   // Create a spell object for every spell
   let unplug = {
-    index: 0,
+    jsonIndex: 0,
+    id: spells[0].id,
     name: spells[0].name,
     points: spells[0].points,
     effects: [dealDamage],
@@ -454,20 +479,43 @@ function createSpellBook() {
     isSpell: true,
     isCounterSpell: false,
     isItem: false
-  }
-  // Store them in an array
-  spellBook = [unplug]
-  // Offensive, defensive spells
+  };
+  // Push the spell into the array
+  spellBook.push(unplug);
+  let saturate = {
+    jsonIndex: 1,
+    id: spells[1].id,
+    name: spells[1].name,
+    points: spells[1].points,
+    effects: [criticalDamage, reduceSpellAmount],
+    agent: [player, opponent],
+    amount: 1,
+    isSpell: true,
+    isCounterSpell: false,
+    isItem: false
+  };
+  // Push the spell into the array
+  spellBook.push(saturate);
 }
 
 // reduceSpellAmount
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//
 // Remove 1 to the used spell amount
-function reduceSpellAmount() {
-  // Reduce one to the amount
-  spells[activeActionIndex].amount -= 1;
-  // Change the text of the button
-  $(`#${spells[activeActionIndex].id}`).text(`${spells[activeActionIndex].name} (${spells[activeActionIndex].amount})`);
+function reduceSpellAmount(agent) {
+  // Check whose spell to reduce
+  if (agent.name === "player") {
+    // Reduce one to the amount
+    spells[activeActionIndex].amount -= 1;
+    // Change the text of the button
+    // Requires to append the info button again
+    $(`#${spells[activeActionIndex].id}`).text(`${spells[activeActionIndex].name} (${spells[activeActionIndex].amount})`);
+    $(`#${spells[activeActionIndex].id}`).append(`<div class='content-info' id='infoS${activeActionIndex}'>&#9432;</div>`)
+    $(`#infoS${activeActionIndex}`).append(`<div class="dropdown-info">${spells[activeActionIndex].effects}</div>`);
+  }
+  if (agent.name === "opponent") {
+    // Reduce one to the amount
+    opponent.spell.amount -= 1;
+  }
 }
 
 // SPELLS
@@ -475,10 +523,12 @@ function reduceSpellAmount() {
 //
 // Deal damage to the opposing wizard
 function dealDamage(agent) {
+  console.log("damage " + agent.name);
   // Define the spell's damage
   damageAmount = getRandomElement(spells[activeActionIndex].points);
+  damageAmount = damageAmount.toFixed(1);
   // Apply the damage
-  agent.hp -= damageAmount.toFixed(1);
+  agent.hp -= damageAmount;
   // Update the battery power of both wizards
   updateBatteryPower();
   // Animate the life bar text of the agent
@@ -486,31 +536,32 @@ function dealDamage(agent) {
 }
 
 // criticalDamage
-// ????????????????????????????????????????????????????????
+//
 // Chance of critical damage, if not regular damage is applied
 function criticalDamage(agent) {
+  console.log("critical " + agent.name);
   // Define a random number
   let randomNumber = Math.random();
   // If the random number is smaller
   if (randomNumber < spells[activeActionIndex].criticalChance) {
     // Deal the spell damage multiplied by the random critMultiplier value
     damageAmount = getRandomElement(spells[activeActionIndex].points) * getRandomElement(critMultiplier);
-    console.log(damageAmount);
+    damageAmount = damageAmount.toFixed(1);
     // Apply the damage to the opponent
-    opponentHP -= damageAmount;
-    opponentHP = opponentHP.toFixed(1);
-    // For the action recap, crit is true
+    agent.hp -= damageAmount;
+    // For the action recap crit is true
     crit = true;
   } else {
     // Deal the spell damage
     damageAmount = getRandomElement(spells[activeActionIndex].points);
+    damageAmount = damageAmount.toFixed(1);
     // Apply the damage to the opponent
-    opponentHP -= damageAmount;
+    agent.hp -= damageAmount;
   }
   // Update the battery power of both wizards
   updateBatteryPower();
-  // Animate the life bar text of the opponent
-  $("#opponent1LifeBarText").effect('pulsate');
+  // Animate the life bar text of the agent
+  $(`#${agent.name}LifeBarText`).effect('pulsate');
 }
 
 // ITEMS
