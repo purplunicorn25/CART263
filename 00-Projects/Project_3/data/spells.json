@@ -12,15 +12,8 @@
       "name": "Saturate Internet Bandwidth",
       "points": [10, 12],
       "effects": "Deals some damage, 25% chance of critical hit.",
-      "amount": "10",
+      "amount": 10,
       "criticalChance": 0.4
-    },
-    {
-      "id": "control",
-      "name": "Take control",
-      "points": ["-10", "-12", "-14", "-16"],
-      "effects": "Your opponent cannot play next turn, but gets two random items.",
-      "amount": "2"
     }
   ],
   "counterSpells": [{
@@ -33,7 +26,7 @@
   "items": [{
     "id": "generator",
     "name": "Tiny Electric Generator",
-    "healPoints": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+    "points": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
     "effects": "Restores some battery power.",
     "amount": "∞"
   }]
