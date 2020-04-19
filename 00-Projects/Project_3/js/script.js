@@ -61,6 +61,9 @@ let opponent = {
   losing: false
 }
 
+// Sounds
+let musicSFX;
+
 // setup
 //
 // Load the data from the JSON
@@ -216,6 +219,18 @@ function beginDuel() {
   });
   // On click, hide the start menu to reveal the player command board
   $(".start").click(() => {
+    // Play the game music in a loop
+    musicSFX = new Pizzicato.Sound({
+      source: 'file',
+      options: {
+        path: './assets/sounds/CWD_inGame_Music.mp3',
+        loop: true,
+        volume: .2,
+      }
+    }, () => {
+      musicSFX.play();
+    });
+    // Hide the menu
     $("#startMenu").hide();
     // Start the round of the starting agent
     if (starting.name === "player") {
@@ -293,6 +308,16 @@ function playerRound() {
 //
 // A function that manages every spell, its possible effects, and the recap type
 function applySpell(spellIndex, effects, isSpell, isCounterSpell, isItem) {
+  // Play a sound
+  let magicSFX = new Pizzicato.Sound({
+    source: 'file',
+    options: {
+      path: './assets/sounds/magic.wav',
+      volume: .4,
+    }
+  }, () => {
+    magicSFX.play();
+  });
   // Define the spell type
   spell = isSpell;
   counterSpell = isCounterSpell;
@@ -548,6 +573,8 @@ function getRandomElement(array) {
 //
 // The agent is the one that lost
 function endgame() {
+  // Stop the music
+  musicSFX.stop();
   // If player lost display this screen
   if (player.losing === true) {
     playerLoser();
