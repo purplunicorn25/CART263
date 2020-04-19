@@ -74,6 +74,11 @@ option {
   text-align: center;
 }
 
+#instructions {
+  text-align: justify;
+  font-size: 23px;
+}
+
 #pre-duel {
   background-color: none;
   width: 40%;
@@ -127,7 +132,7 @@ option {
   padding: 40px;
 }
 
-#endGame {
+#endGameLoser {
   width: 50%;
   height: 70%;
   background-color: black;
@@ -135,6 +140,69 @@ option {
   bottom: 0;
   left: 10%;
   padding: 40px;
+  text-align: center;
+  display: none;
+}
+
+#endGameWinner {
+  width: 50%;
+  height: 70%;
+  background-color: black;
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  padding: 40px;
+  text-align: center;
+  display: none;
+}
+
+#blackScreen {
+  width: 50%;
+  height: 70%;
+  background-color: black;
+  position: absolute;
+  bottom: 0;
+  left: 10%;
+  padding: 40px;
+  text-align: center;
+  display: none;
+}
+
+.ascii {
+  font-size: 12px;
+  line-height: 15px;
+}
+
+#startAgain {
+  position: absolute;
+  left: 38%;
+  bottom: 5%;
+  width: 200px;
+}
+
+#startAgainDark {
+  font-size: 70px;
+  position: absolute;
+  left: 25%;
+  bottom: 42%;
+  width: 400px;
+  height: 100px;
+  border-color: black;
+  color: black;
+}
+
+#computer {
+  position: absolute;
+  top: 35%;
+  left: 15%;
+  font-size: 8px;
+}
+
+#computer2 {
+  position: absolute;
+  top: 35%;
+  right: 19%;
+  font-size: 8px;
 }
 
 #commandBoard {

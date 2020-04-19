@@ -15,15 +15,16 @@ DESCRIPTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 $(document).ready(setup);
 
 //
-const CHECK_INTERVAL = 200;
+const CHECK_INTERVAL = 10;
 
 // Start value
 let starting;
 
 // Attacks, Counter-Attacks, and Items
-let spells;
+let spells = [];
 let counterSpells = [];
 let items = [];
+let wizards = [];
 
 // Current used spell JSON Index
 let activeActionIndex = 0;
@@ -48,13 +49,16 @@ let defensiveSpellBook = [];
 // Player and Opponent objects
 // They start with full
 let player = {
-  hp: 0,
-  name: "player"
+  hp: 100,
+  name: "player",
+  losing: false
 }
 let opponent = {
-  hp: 100,
+  hp: 1,
   name: "opponent",
-  spell: ""
+  wizardName: "",
+  spell: "",
+  losing: false
 }
 
 // setup
@@ -80,10 +84,11 @@ function dataError(request, textStatus, error) {
 // Store the data in arrays, display the element that require the data,
 // And start the game
 function dataLoaded(data) {
-  // Store the spells in an array
+  // Store the spells and the wizards in an array
   spells = data.spells;
   counterSpells = data.counterSpells;
   items = data.items;
+  wizards = data.wizards;
   // Display the all spells in the dropdown menus
   displaySpells();
   // Create an array that stores all the effects
@@ -91,7 +96,6 @@ function dataLoaded(data) {
   // Start game
   startGame();
 }
-
 
 // displaySpells
 //
@@ -122,6 +126,11 @@ function displaySpells() {
 //
 // Set the basic updating elements and the random draw button
 function startGame() {
+  // Define who is the opponent
+  opponent.wizardName = getRandomElement(wizards);
+  // Display the instructions
+  $("#instructions").text(`Challenge your wizard skills against the great wizard ${opponent.wizardName}. In this duel, you have to choose only one spell, counter-spell, or an item per turn,
+    and some are in a limited quantity. The goal is, like in every duel, to defeat your opponent and bring defamation to the name of ${opponent.wizardName}. Choose your side and be victorious!`);
   // Draw to find out who starts the game
   $("#draw").click(flicker);
   //  Display battery power (HP)
@@ -173,12 +182,13 @@ function chooseFirstPlayer() {
     setTimeout(beginDuel, 1500);
   } else {
     // Display who starts
-    $("#drawResult").text("YOUR OPPONENT STARTS...");
+    $("#drawResult").text(`${opponent.wizardName} STARTS...`);
     // Start with the opponent round
     starting = opponent;
     // Call the pre-duel instructions
     setTimeout(beginDuel, 1500);
   }
+  console.log(starting)
 }
 
 // beginDuel
@@ -187,16 +197,18 @@ function chooseFirstPlayer() {
 // (with timing for dialog-like feeling)
 // And start the game
 function beginDuel() {
-  console.log(starting);
   // First line of text
-  $("#prepare").append("<h2>PREPARE TO DUEL</h2><p>Show respect to your opponent.</p>");
+  $("#prepare").append(`<h2>PREPARE TO DUEL</h2><p>Show respect to ${opponent.wizardName}.</p>`);
   // Display the buttons with a delay, respect or disrespect
   setTimeout(() => {
     $(".bow").css("display", "inline-block");
   }, 1500);
   // On click, bring the next line of text
   $(".bow").click(() => {
-    $("#ready").append("<p>Ready your keyboard...<br>");
+    // Hide the buttons
+    $(".bow").hide();
+    // Add the text to the next step
+    $("#ready").text("Ready your keyboard...");
     // After a short while, display the start button
     setTimeout(() => {
       $(".start").css("display", "inline-block");
@@ -205,10 +217,12 @@ function beginDuel() {
   // On click, hide the start menu to reveal the player command board
   $(".start").click(() => {
     $("#startMenu").hide();
-    //
-    if (starting === "player") {
+    // Start the round of the starting agent
+    if (starting.name === "player") {
+      console.log("starting player")
       playerRound();
-    } else if (starting === opponent) {
+    } else if (starting.name === "opponent") {
+      console.log("starting opponent")
       disableActions();
       opponentRound();
     }
@@ -301,8 +315,11 @@ function applySpell(spellIndex, effects, isSpell, isCounterSpell, isItem) {
 function endPlayerRound() {
   // Display the most recent action in the match history
   history(player);
-  // Start the opponent round with a somewhat random delay so its not immediate
-  setTimeout(opponentRound, Math.random() * 5000);
+  // Do not start another opponent round if the opponent lost
+  if (opponent.losing === false) {
+    // Start the opponent round with a somewhat random delay so its not immediate
+    setTimeout(opponentRound, Math.random() * 5000);
+  }
 }
 
 // opponentRound
@@ -313,12 +330,12 @@ function opponentRound() {
   if (opponent.hp > 70) {
     // Choose a random spell in the offensiveSpellBook
     opponent.spell = getRandomElement(offensiveSpellBook);
-  } else if (opponent.hp <= 70 && opponent.hp >= 30) {
+  } else if (opponent.hp <= 70 && opponent.hp >= 10) {
     // Choose a random spell in the offensiveSpellBook
     opponent.spell = getRandomElement(spellBook);
   } else if (player.hp < 20) {
     opponent.spell = getRandomElement(offensiveSpellBook);
-  } else if (opponent.hp < 30) {
+  } else if (opponent.hp < 10) {
     // Choose a random spell in the offensiveSpellBook
     opponent.spell = getRandomElement(defensiveSpellBook);
   }
@@ -347,25 +364,43 @@ function endOpponentRound() {
   setTimeout(playerRound, 1000);
 }
 
-// endgame
+// checkHP
 //
-// The agent is the one that lost
-function endgame(agent) {
-  // If player lost display this screen
-  if (agent.name === "player") {
-    console.log('player lost');
-    playerLoser();
-    // If opponent lost display this screen
-  } else if (agent.name === "opponent") {
-    opponentLoser();
+// Check if the HP is over 100 or below 0
+// Constrain it under 100 and at 0 call endgame
+function checkHP() {
+  if (player.losing === false && opponent.losing === false) {
+    // PLAYER
+    // The player restaured all his HP
+    if (player.hp > 100) {
+      // Make it so it does not go over 100
+      player.hp = 100;
+      // The player has no battery power
+    } else if (player.hp <= 0) {
+      // Make it so it does not go below 0
+      player.hp = 0;
+      // player losing is true
+      player.losing = true;
+      // The player lost
+      endgame();
+    }
+    // OPPONENT
+    // The opponent restaured all his HP
+    if (opponent.hp > 100) {
+      // Make it so it does not go over 100
+      opponent.hp = 100;
+      // The opponent has no battery power
+    } else if (opponent.hp <= 0) {
+      // Make it so it does not go below 0
+      opponent.hp = 0;
+      // Opponent losing is true
+      opponent.losing = true;
+      // The opponent lost
+      endgame();
+    }
   }
-}
-
-// playerRound
-//
-//
-function playerRound() {
-  $("#endGame").text("ERROR 404");
+  // Apply the change
+  updateBatteryPower();
 }
 
 // disableActions
@@ -394,15 +429,18 @@ function enableActions() {
 function history(agent) {
   // Define who caused the action
   let initiator = agent.name;
+  console.log(initiator);
   // Define approprite pronoun/noun/article
   let sender;
   let receiver;
   // If the player initiated the action
   if (initiator === "player") {
+    console.log("initiator player")
     sender = "YOU";
-    receiver = "your OPPONENT";
+    receiver = `${opponent.wizardName}`;
   } else if (initiator === "opponent") {
-    sender = "Your OPPONENT";
+    console.log("initiator opp")
+    sender = `${opponent.wizardName}`;
     receiver = "YOU";
   }
   // The value containing the text to display
@@ -499,39 +537,6 @@ function checkSpellAmount() {
   }
 }
 
-// checkHP
-//
-// Check if the HP is over 100 or below 0
-// Constrain it under 100 and at 0 call endgame
-function checkHP() {
-  // PLAYER
-  // The player restaured all his HP
-  if (player.hp > 100) {
-    // Make it so it does not go over 100
-    player.hp = 100;
-    // The player has no battery power
-  } else if (player.hp < 0) {
-    // Make it so it does not go below 0
-    player.hp = 0;
-    // The player lost
-    endgame(player);
-  }
-  // OPPONENT
-  // The opponent restaured all his HP
-  if (opponent.hp > 100) {
-    // Make it so it does not go over 100
-    opponent.hp = 100;
-    // The opponent has no battery power
-  } else if (opponent.hp < 0) {
-    // Make it so it does not go below 0
-    opponent.hp = 0;
-    // The opponent lost
-    endgame(opponent);
-  }
-  // Apply the change
-  updateBatteryPower();
-}
-
 // getRandomElement
 //
 // Get a random element from a specific array
@@ -539,6 +544,88 @@ function getRandomElement(array) {
   let element = array[Math.floor(Math.random() * array.length)];
   return element;
 }
+// endgame
+//
+// The agent is the one that lost
+function endgame() {
+  // If player lost display this screen
+  if (player.losing === true) {
+    playerLoser();
+    // If opponent lost display this screen
+  } else if (opponent.losing === true) {
+    opponentLoser();
+  }
+}
+
+// playerLoser
+//
+// Display the loser screen
+function playerLoser() {
+  // Show losing and closed screen behind
+  $("#endGameLoser").show();
+  $("#blackScreen").show();
+  // Hide the screen after 10 seconds
+  let seconds = 10;
+  // Make a countdown before the screen disapear
+  setInterval(() => {
+    // Remove 1
+    seconds -= 1;
+    // Display the timer
+    $("#timer").html(`<p><h2>your device will shut down in </h2><h1>${seconds}</h1></p>`);
+    // When the countdown is over hide the end
+    if (seconds === 0) {
+      // Hide the text
+      $("#endGameLoser").hide("scale", "fast");
+    }
+  }, 1000);
+  // If restart button is clicked restart the game
+  $("#startAgainDark").one("click", restartGame);
+}
+
+// opponentLoser
+//
+// Display the winning screen
+function opponentLoser() {
+  // Show winning screen
+  $("#endGameWinner").show();
+  // If restart button is clicked restart the game
+  $("#startAgain").one("click", restartGame);
+}
+
+// restartGame
+//
+// Restaure the values of to their initial state
+function restartGame() {
+  // Hide all the endgame screens
+  $("#endGameWinner").hide();
+  $("#endGameLoser").hide();
+  $("#blackScreen").hide();
+  // Show the startMenu
+  $("#startMenu").show();
+  // Restore the draw menu
+  // Define who is the new opponent
+  opponent.wizardName = getRandomElement(wizards);
+  // Display the instructions with the right opponent
+  $("#instructions").text(`Challenge your wizard skills against the great wizard ${opponent.wizardName}. In this duel, you have to choose only one spell, counter-spell, or an item per turn,
+    and some are in a limited quantity. The goal is, like in every duel, to defeat your opponent and bring defamation to the name of ${opponent.wizardName}. Choose your side and be victorious!`);
+  // Make these element back to their original state
+  $("#drawResult").empty();
+  $("#prepare").empty();
+  $("#ready").empty();
+  $(".start").css("display", "none");
+  $("#draw").show();
+  // Empty the recap and restore the agent's HP to 100
+  $("#recap").empty();
+  player.hp = 100;
+  opponent.hp = 100;
+  // Enable checkHP again
+  player.losing = false;
+  opponent.losing = false;
+  starting.name = "";
+  // Restore the spell amounts
+  ////////////////////////////////////////////////////////////
+}
+
 
 //
 //
@@ -721,7 +808,6 @@ function heal(agent) {
   }
   // Apply healing
   agent.hp += healAmount;
-  console.log(agent.hp);
   // Update the battery power of both wizards
   updateBatteryPower();
   // Animate the life bar text of the player

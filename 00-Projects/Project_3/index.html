@@ -72,7 +72,7 @@
   <!-- In front of the rest of the player screen at the beginning -->
   <div id="startMenu">
     <h1>COMPUTATIONAL WIZARD DUEL</h1>
-    <p>Challenge your wiard skills against the amazing .</p>
+    <p id="instructions"></p>
     <br>
     <label for="side">Select a side</label>
     <br>
@@ -100,7 +100,77 @@
     </div>
   </div>
 
-  <div id="endGame">404</div>
+  <div id="blackScreen">
+    <button id="startAgainDark">START AGAIN</button>
+  </div>
+  <div id="endGameLoser">
+    <br><br><br><br>
+    <h1>DEFEAT</h1>
+    <h1>* LOW BATTERY LEVEL *</h1>
+    <div id="timer"></div>
+  </div>
+  <div id="endGameWinner">
+    <button id="startAgain">START AGAIN</button>
+    <h1>✧･ﾟ: *✧･ﾟ VICTORY ﾟ･✧* :ﾟ･✧</h1>
+    <h2>! YOU'RE A GREAT COMPUTATIONAL WIZARD !</h2>
+    <pre><p class="ascii">
+    ____
+.'* *.'
+__/_*_*(_
+/ _______ \
+_\_)/___\(_/_
+/ _((\- -/))_ \
+\ \())(-)(()/ /
+' \(((()))/ '
+/ ' \)).))/ ' \
+/ _ \ - | - /_  \
+(   ( .;''';. .'  )
+_\"__ /    )\ __"/_
+\/  \   ' /  \/
+.'  '...' ' )
+/ /  |  \ \
+/ .   .   . \
+/   .     .   \
+/   /   |   \   \
+.'   /    b    '.  '.
+_.-'    /     Bb     '-. '-._
+_.-'       |      BBb       '-.  '-.
+(___________\____.dBBBb.________)____)
+</p>
+</pre>
+    <div id="computer">
+      <pre><p class="ascii">
+    _________
+    / ======= \
+    / __________\
+    | ___________ |
+    | | -       | |
+    | |         | |
+    | |_________| |
+    \=____________/
+    / """"""""""" \
+    / ::::::::::::: \
+    (_________________)
+    </p>
+    </pre>
+    </div>
+    <div id="computer2">
+      <pre><p class="ascii">
+    _________
+    / ======= \
+    / __________\
+    | ___________ |
+    | | -       | |
+    | |         | |
+    | |_________| |
+    \=____________/
+    / """"""""""" \
+    / ::::::::::::: \
+    (_________________)
+    </p>
+    </pre>
+    </div>
+  </div>
 
 </body>
 

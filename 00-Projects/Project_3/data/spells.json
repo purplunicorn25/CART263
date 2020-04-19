@@ -32,15 +32,15 @@
     "effects": "Restores some battery power.",
     "amount": "∞"
   }],
-  "wizards": ["Uzaphior",
-    "Agaell",
-    "Udahith",
-    "Amiwyn",
-    "Ishan",
-    "Ihith",
-    "Kunyll",
-    "Harhan",
-    "Anilorh",
-    "Phamorith"
+  "wizards": ["UZAPHIOR",
+    "AGAELL",
+    "UDAHITH",
+    "AMIWYN",
+    "ISHAN",
+    "IHITH",
+    "KUNYLL",
+    "HARHNAN",
+    "ANILORH",
+    "PHAMORITH"
   ]
 }
