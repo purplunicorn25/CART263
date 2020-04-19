@@ -17,11 +17,13 @@
     }
   ],
   "counterSpells": [{
-    "id": "firewall",
-    "name": "Firewall",
-    "points": ["-10", "-12", "-14", "-16"],
-    "effects": "Reduces upcoming damage by 40%.",
-    "amount": "∞"
+    "id": "antivirus",
+    "name": "Scan for Virus",
+    "points": [5.2, 5.9, 6.6, 6.8, 7],
+    "effects": "Deals little damage and heals twice the value of the damage.",
+    "amount": "12",
+    "antivirus": true,
+    "healthMultiplier": 2
   }],
   "items": [{
     "id": "generator",
@@ -29,5 +31,16 @@
     "points": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
     "effects": "Restores some battery power.",
     "amount": "∞"
-  }]
+  }],
+  "wizards": ["Uzaphior",
+    "Agaell",
+    "Udahith",
+    "Amiwyn",
+    "Ishan",
+    "Ihith",
+    "Kunyll",
+    "Harhan",
+    "Anilorh",
+    "Phamorith"
+  ]
 }

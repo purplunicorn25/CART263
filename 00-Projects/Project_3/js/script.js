@@ -17,6 +17,9 @@ $(document).ready(setup);
 //
 const CHECK_INTERVAL = 200;
 
+// Start value
+let starting;
+
 // Attacks, Counter-Attacks, and Items
 let spells;
 let counterSpells = [];
@@ -34,7 +37,7 @@ let crit = false;
 
 // Spell Type Status
 let spell = false;
-let counterspell = false;
+let counterSpell = false;
 let item = false;
 
 // Array containing all spells
@@ -45,11 +48,11 @@ let defensiveSpellBook = [];
 // Player and Opponent objects
 // They start with full
 let player = {
-  hp: 80,
+  hp: 0,
   name: "player"
 }
 let opponent = {
-  hp: 50,
+  hp: 100,
   name: "opponent",
   spell: ""
 }
@@ -91,7 +94,7 @@ function dataLoaded(data) {
 
 
 // displaySpells
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//
 // Display the spells as buttons, the amount of spells left and info button
 function displaySpells() {
   // For every spells make a button with the right ID, the spell's name, and an info bubble
@@ -113,12 +116,10 @@ function displaySpells() {
   $(".spellsActions").button();
   $(".counterSpellsActions").button();
   $(".itemsActions").button();
-  // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  playerRound();
 }
 
 // startGame
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+//
 // Set the basic updating elements and the random draw button
 function startGame() {
   // Draw to find out who starts the game
@@ -129,8 +130,6 @@ function startGame() {
   setInterval(checkSpellAmount, CHECK_INTERVAL);
   // Always check if HP is over 100
   setInterval(checkHP, CHECK_INTERVAL);
-  //////////////////////////////////////////////
-  $("#startMenu").hide();
 }
 
 // flicker
@@ -168,15 +167,15 @@ function chooseFirstPlayer() {
   if ($("#side :selected").val() === result) {
     // Display who starts
     $("#drawResult").text("YOU START!");
-    // Start the player round
-    playerRound();
+    // Start with the player round
+    starting = player;
     // Call the pre-duel instructions
     setTimeout(beginDuel, 1500);
   } else {
     // Display who starts
     $("#drawResult").text("YOUR OPPONENT STARTS...");
-    // Start the opponent round
-    opponentRound();
+    // Start with the opponent round
+    starting = opponent;
     // Call the pre-duel instructions
     setTimeout(beginDuel, 1500);
   }
@@ -188,6 +187,7 @@ function chooseFirstPlayer() {
 // (with timing for dialog-like feeling)
 // And start the game
 function beginDuel() {
+  console.log(starting);
   // First line of text
   $("#prepare").append("<h2>PREPARE TO DUEL</h2><p>Show respect to your opponent.</p>");
   // Display the buttons with a delay, respect or disrespect
@@ -205,6 +205,13 @@ function beginDuel() {
   // On click, hide the start menu to reveal the player command board
   $(".start").click(() => {
     $("#startMenu").hide();
+    //
+    if (starting === "player") {
+      playerRound();
+    } else if (starting === opponent) {
+      disableActions();
+      opponentRound();
+    }
   })
 }
 
@@ -239,7 +246,24 @@ function playerRound() {
     event.stopImmediatePropagation();
   });
 
-  // Items
+  // COUNTERSPELLS
+  // Deals damage and heals twice the damage amount
+  $("#antivirus").one("click", (event) => {
+    applySpell(0, [{
+      function: dealDamage,
+      agent: opponent
+    }, {
+      function: heal,
+      agent: player
+    }, {
+      function: reduceSpellAmount,
+      agent: player
+    }], false, true, false);
+    // Prevents effects to double
+    event.stopImmediatePropagation();
+  });
+
+  // ITEMS
   // Generator give battery power
   $("#generator").one("click", (event) => {
     applySpell(0, [{
@@ -255,6 +279,10 @@ function playerRound() {
 //
 // A function that manages every spell, its possible effects, and the recap type
 function applySpell(spellIndex, effects, isSpell, isCounterSpell, isItem) {
+  // Define the spell type
+  spell = isSpell;
+  counterSpell = isCounterSpell;
+  item = isItem;
   // Define the right index for the spells
   activeActionIndex = spellIndex;
   // Disable all the buttons
@@ -265,10 +293,6 @@ function applySpell(spellIndex, effects, isSpell, isCounterSpell, isItem) {
   }
   // Start the opponent's round
   setTimeout(endPlayerRound, 1000);
-  // Define the recap text type
-  spell = isSpell;
-  counterspell = isCounterSpell;
-  item = isItem;
 }
 
 // endPlayerRound
@@ -285,26 +309,29 @@ function endPlayerRound() {
 //
 // Apply a random spell from the spellBook
 function opponentRound() {
+  // Choose different spell books according to the battery level of the agents
   if (opponent.hp > 70) {
     // Choose a random spell in the offensiveSpellBook
     opponent.spell = getRandomElement(offensiveSpellBook);
   } else if (opponent.hp <= 70 && opponent.hp >= 30) {
     // Choose a random spell in the offensiveSpellBook
     opponent.spell = getRandomElement(spellBook);
+  } else if (player.hp < 20) {
+    opponent.spell = getRandomElement(offensiveSpellBook);
   } else if (opponent.hp < 30) {
     // Choose a random spell in the offensiveSpellBook
     opponent.spell = getRandomElement(defensiveSpellBook);
   }
+  // Define the recap text type
+  spell = opponent.spell.isSpell;
+  counterSpell = opponent.spell.isCounterSpell;
+  item = opponent.spell.isItem;
   // Set the correct index
   activeActionIndex = opponent.spell.jsonIndex;
   // Apply its effects
   for (let i = 0; i < opponent.spell.effects.length; i++) {
     opponent.spell.effects[i].function(opponent.spell.effects[i].agent);
   }
-  // Define the recap text type
-  spell = opponent.spell.isSpell;
-  counterspell = opponent.spell.isCounterSpell;
-  item = opponent.spell.isItem;
   // End the opponent round
   setTimeout(endOpponentRound, 1000);
 }
@@ -321,10 +348,24 @@ function endOpponentRound() {
 }
 
 // endgame
-// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//
 // The agent is the one that lost
 function endgame(agent) {
-  console.log(agent.name + " lost")
+  // If player lost display this screen
+  if (agent.name === "player") {
+    console.log('player lost');
+    playerLoser();
+    // If opponent lost display this screen
+  } else if (agent.name === "opponent") {
+    opponentLoser();
+  }
+}
+
+// playerRound
+//
+//
+function playerRound() {
+  $("#endGame").text("ERROR 404");
 }
 
 // disableActions
@@ -378,16 +419,18 @@ function history(agent) {
     // Regular damage action
     else {
       // Define text
-      actionSummary = `${sender} have used ${spells[activeActionIndex].name} and ${receiver} lost ${damageAmount}% of battery power.`;
+      actionSummary = `${sender} used ${spells[activeActionIndex].name} and ${receiver} lost ${damageAmount}% of battery power.`;
     }
     // FOR COUNTERSPELLS
-  } else if (counterspell === true) {
+  } else if (counterSpell === true) {
+    // Define text
+    actionSummary = `${sender} used ${counterSpells[activeActionIndex].name}. ${sender} generated ${healAmount}% of battery power while ${receiver} lost ${damageAmount}% of battery power.`;
     // FOR ITEMS
   } else if (item === true) {
     // Healing action
     if (healed === true) {
       // Define text
-      actionSummary = `${sender} have used ${items[activeActionIndex].name} and generated ${healAmount}% of battery power.`;
+      actionSummary = `${sender} used ${items[activeActionIndex].name} and generated ${healAmount}% of battery power.`;
       // Return the condition to false
       healed = false;
     }
@@ -398,7 +441,7 @@ function history(agent) {
   updateScroll();
   // Everything returns to false
   spell = false;
-  counterspell = false;
+  counterSpell = false;
   item = false;
 }
 
@@ -416,13 +459,13 @@ function updateScroll() {
 // Display the player and opponent battery power, update after events
 function updateBatteryPower() {
   // Display player's HP in the log
-  $("#hp").text(`BATTERY POWER: ${player.hp.toFixed(1)}%`);
+  $("#hp").text(`BATTERY POWER: ${player.hp}%`);
   // Display player's HP below the life bar
-  $("#playerLifeBarText").text(`BATTERY POWER: ${player.hp.toFixed(1)}%`);
+  $("#playerLifeBarText").text(`BATTERY POWER: ${player.hp}%`);
   // Adjust the width of the life bar accordingly
   $("#playerLife").css("width", `${player.hp}%`);
   // Display opponent's HP below the life bar
-  $("#opponentLifeBarText").text(`BATTERY POWER: ${opponent.hp.toFixed(1)}%`);
+  $("#opponentLifeBarText").text(`BATTERY POWER: ${opponent.hp}%`);
   // Adjust the width of the life bar accordingly
   $("#opponentLife").css("width", `${opponent.hp}%`);
 }
@@ -541,6 +584,23 @@ function createSpellBook() {
       isCounterSpell: false,
       isItem: false
     },
+    // ANTIVIRUS
+    {
+      jsonIndex: 0,
+      id: counterSpells[0].id,
+      name: counterSpells[0].name,
+      points: counterSpells[0].points,
+      effects: [{
+        function: dealDamage,
+        agent: player
+      }, {
+        function: heal,
+        agent: opponent
+      }],
+      isSpell: false,
+      isCounterSpell: true,
+      isItem: false
+    },
     // GENERATOR
     {
       jsonIndex: 0,
@@ -560,7 +620,7 @@ function createSpellBook() {
   // For damage spells
   offensiveSpellBook = [spellBook[0], spellBook[1]];
   // For healing spells
-  defensiveSpellBook = [spellBook[2]];
+  defensiveSpellBook = [spellBook[2], spellBook[3]];
 }
 
 // reduceSpellAmount
@@ -570,16 +630,34 @@ function reduceSpellAmount(agent) {
   // Check whose spell to reduce
   if (agent.name === "player") {
     // Reduce one to the amount
-    spells[activeActionIndex].amount -= 1;
-    // Change the text of the button
-    // Requires to append the info button again
-    $(`#${spells[activeActionIndex].id}`).text(`${spells[activeActionIndex].name} (${spells[activeActionIndex].amount})`);
-    $(`#${spells[activeActionIndex].id}`).append(`<div class='content-info' id='infoS${activeActionIndex}'>&#9432;</div>`)
-    $(`#infoS${activeActionIndex}`).append(`<div class="dropdown-info">${spells[activeActionIndex].effects}</div>`);
-  }
-  if (agent.name === "opponent") {
-    // Reduce one to the amount
-    opponent.spell.amount -= 1;
+    if (spell === true) {
+      spells[activeActionIndex].amount -= 1;
+      // Change the text of the button
+      // Requires to append the info button again
+      $(`#${spells[activeActionIndex].id}`).text(`${spells[activeActionIndex].name} (${spells[activeActionIndex].amount})`);
+      $(`#${spells[activeActionIndex].id}`).append(`<div class='content-info' id='infoS${activeActionIndex}'>&#9432;</div>`)
+      $(`#infoS${activeActionIndex}`).append(`<div class="dropdown-info">${spells[activeActionIndex].effects}</div>`);
+    }
+    if (counterSpell === true) {
+      counterSpells[activeActionIndex].amount -= 1;
+      // Change the text of the button
+      // Requires to append the info button again
+      $(`#${counterSpells[activeActionIndex].id}`).text(`${counterSpells[activeActionIndex].name} (${counterSpells[activeActionIndex].amount})`);
+      $(`#${counterSpells[activeActionIndex].id}`).append(`<div class='content-info' id='infoCS${activeActionIndex}'>&#9432;</div>`)
+      $(`#infoCS${activeActionIndex}`).append(`<div class="dropdown-info">${counterSpells[activeActionIndex].effects}</div>`);
+    }
+    if (items === true) {
+      items[activeActionIndex].amount -= 1;
+      // Change the text of the button
+      // Requires to append the info button again
+      $(`#${items[activeActionIndex].id}`).text(`${items[activeActionIndex].name} (${items[activeActionIndex].amount})`);
+      $(`#${items[activeActionIndex].id}`).append(`<div class='content-info' id='infoI${activeActionIndex}'>&#9432;</div>`)
+      $(`#infoI${activeActionIndex}`).append(`<div class="dropdown-info">${items[activeActionIndex].effects}</div>`);
+    }
+    if (agent.name === "opponent") {
+      // Reduce one to the amount
+      opponent.spell.amount -= 1;
+    }
   }
 }
 
@@ -589,8 +667,7 @@ function reduceSpellAmount(agent) {
 // Deal damage to the opposing wizard
 function dealDamage(agent) {
   // Define the spell's damage
-  damageAmount = getRandomElement(spells[activeActionIndex].points);
-  damageAmount = damageAmount.toFixed(1);
+  damageAmount = getRandomElement(spells[activeActionIndex].points).toFixed(1);
   // Apply the damage
   agent.hp -= damageAmount;
   // Update the battery power of both wizards
@@ -632,15 +709,23 @@ function criticalDamage(agent) {
 //
 // Increase the agent's battery power
 function heal(agent) {
-  console.log(items[activeActionIndex]);
-  // Define spell's healing
-  healAmount = getRandomElement(items[activeActionIndex].points);
+  // For counterspells
+  if (counterSpell === true) {
+    // For antivirus
+    if (counterSpells[activeActionIndex].antivirus === true) {
+      healAmount = damageAmount * counterSpells[activeActionIndex].healthMultiplier.toFixed(1);
+    }
+  } else if (item === true) {
+    // Define spell's healing
+    healAmount = getRandomElement(items[activeActionIndex].points);
+  }
   // Apply healing
   agent.hp += healAmount;
+  console.log(agent.hp);
   // Update the battery power of both wizards
   updateBatteryPower();
   // Animate the life bar text of the player
-  $(`#${agent.name}LifeBarText`).effect('pulsate');
+  $(`#${agent.hp}LifeBarText`).effect('pulsate');
   // For action recap
   healed = true;
 }
