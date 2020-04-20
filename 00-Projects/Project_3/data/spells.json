@@ -5,6 +5,7 @@
       "name": "Unplug Computer",
       "points": [8, 8.5, 9, 9.5, 10],
       "effects": "Deals some damage.",
+      "initialAmount": "∞",
       "amount": "∞"
     },
     {
@@ -12,6 +13,7 @@
       "name": "Saturate Internet Bandwidth",
       "points": [10, 12],
       "effects": "Deals some damage, 25% chance of critical hit.",
+      "initialAmount": 10,
       "amount": 10,
       "criticalChance": 0.4
     }
@@ -21,6 +23,7 @@
     "name": "Scan for Virus",
     "points": [5.2, 5.9, 6.6, 6.8, 7],
     "effects": "Deals little damage and heals twice the value of the damage.",
+    "initialAmount": 12,
     "amount": "12",
     "antivirus": true,
     "healthMultiplier": 2
@@ -28,8 +31,9 @@
   "items": [{
     "id": "generator",
     "name": "Tiny Electric Generator",
-    "points": [10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+    "points": [4, 5, 6, 10, 11, 15, 18],
     "effects": "Restores some battery power.",
+    "initialAmount": "∞",
     "amount": "∞"
   }],
   "wizards": ["UZAPHIOR",

@@ -5,10 +5,11 @@ Computational Wizard Duel
 Anne Boutet
 (✿◠‿◠)
 
-DESCRIPTION!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Basic turn-by-turn based game of a computational wizard duel. There are
+three types of actions spell, counterSpell, and items. The effects of
+these actions affect the battery power (health power). The goal is to
+bring the opponent battery power to zero. Some spells or items are in
+a limited quantity so a bit a strategy might be needed.
 
 *********************************************************************/
 
@@ -30,8 +31,8 @@ let wizards = [];
 let activeActionIndex = 0;
 
 // Spell Values
-let damageAmount;
-let healAmount;
+let damageAmount = 0;
+let healAmount = 0;
 let healed = false;
 let critMultiplier = [1.5, 1.6, 1.7, 1.8];
 let crit = false;
@@ -54,7 +55,7 @@ let player = {
   losing: false
 }
 let opponent = {
-  hp: 1,
+  hp: 100,
   name: "opponent",
   wizardName: "",
   spell: "",
@@ -62,7 +63,21 @@ let opponent = {
 }
 
 // Sounds
-let musicSFX;
+let musicSFX = new Pizzicato.Sound({
+  source: 'file',
+  options: {
+    path: './assets/sounds/CWD_inGame_Music.mp3',
+    loop: true,
+    volume: .2
+  }
+});
+let magicSFX = new Pizzicato.Sound({
+  source: 'file',
+  options: {
+    path: './assets/sounds/magic.wav',
+    volume: .4,
+  }
+});
 
 // setup
 //
@@ -134,6 +149,8 @@ function startGame() {
   // Display the instructions
   $("#instructions").text(`Challenge your wizard skills against the great wizard ${opponent.wizardName}. In this duel, you have to choose only one spell, counter-spell, or an item per turn,
     and some are in a limited quantity. The goal is, like in every duel, to defeat your opponent and bring defamation to the name of ${opponent.wizardName}. Choose your side and be victorious!`);
+  // Display the opponent's name
+  $("#opponentName").html(`${opponent.wizardName}`);
   // Draw to find out who starts the game
   $("#draw").click(flicker);
   //  Display battery power (HP)
@@ -191,7 +208,6 @@ function chooseFirstPlayer() {
     // Call the pre-duel instructions
     setTimeout(beginDuel, 1500);
   }
-  console.log(starting)
 }
 
 // beginDuel
@@ -218,26 +234,16 @@ function beginDuel() {
     }, 2000);
   });
   // On click, hide the start menu to reveal the player command board
-  $(".start").click(() => {
+  $(".start").one("click", () => {
     // Play the game music in a loop
-    musicSFX = new Pizzicato.Sound({
-      source: 'file',
-      options: {
-        path: './assets/sounds/CWD_inGame_Music.mp3',
-        loop: true,
-        volume: .2,
-      }
-    }, () => {
-      musicSFX.play();
-    });
+    musicSFX.play();
     // Hide the menu
     $("#startMenu").hide();
     // Start the round of the starting agent
     if (starting.name === "player") {
-      console.log("starting player")
+      enableActions();
       playerRound();
     } else if (starting.name === "opponent") {
-      console.log("starting opponent")
       disableActions();
       opponentRound();
     }
@@ -309,15 +315,7 @@ function playerRound() {
 // A function that manages every spell, its possible effects, and the recap type
 function applySpell(spellIndex, effects, isSpell, isCounterSpell, isItem) {
   // Play a sound
-  let magicSFX = new Pizzicato.Sound({
-    source: 'file',
-    options: {
-      path: './assets/sounds/magic.wav',
-      volume: .4,
-    }
-  }, () => {
-    magicSFX.play();
-  });
+  magicSFX.play();
   // Define the spell type
   spell = isSpell;
   counterSpell = isCounterSpell;
@@ -394,6 +392,10 @@ function endOpponentRound() {
 // Check if the HP is over 100 or below 0
 // Constrain it under 100 and at 0 call endgame
 function checkHP() {
+  // Always keep sure that the HP are only displayed with one digit
+  opponent.hp = parseFloat(opponent.hp).toFixed(1);
+  player.hp = parseFloat(player.hp).toFixed(1);
+  // Stop checking HP when the game is over
   if (player.losing === false && opponent.losing === false) {
     // PLAYER
     // The player restaured all his HP
@@ -452,19 +454,19 @@ function enableActions() {
 //
 // Display the most recent action
 function history(agent) {
+  // Always keep sure that the damage and heal amount are display with one digit
+  damageAmount = parseFloat(damageAmount).toFixed(1);
+  healAmount = parseFloat(healAmount).toFixed(1);
   // Define who caused the action
   let initiator = agent.name;
-  console.log(initiator);
   // Define approprite pronoun/noun/article
   let sender;
   let receiver;
   // If the player initiated the action
   if (initiator === "player") {
-    console.log("initiator player")
     sender = "YOU";
     receiver = `${opponent.wizardName}`;
   } else if (initiator === "opponent") {
-    console.log("initiator opp")
     sender = `${opponent.wizardName}`;
     receiver = "YOU";
   }
@@ -557,9 +559,7 @@ function checkSpellAmount() {
     }
   }
   // FOR OPPONENT -> Check if it's amount is equal to 0
-  if (opponent.spell.amount === 0) {
-    console.log("empty");
-  }
+  if (opponent.spell.amount === 0) {}
 }
 
 // getRandomElement
@@ -635,6 +635,8 @@ function restartGame() {
   // Display the instructions with the right opponent
   $("#instructions").text(`Challenge your wizard skills against the great wizard ${opponent.wizardName}. In this duel, you have to choose only one spell, counter-spell, or an item per turn,
     and some are in a limited quantity. The goal is, like in every duel, to defeat your opponent and bring defamation to the name of ${opponent.wizardName}. Choose your side and be victorious!`);
+  // Display the new opponent's name
+  $("#opponentName").html(`${opponent.wizardName}`);
   // Make these element back to their original state
   $("#drawResult").empty();
   $("#prepare").empty();
@@ -648,11 +650,23 @@ function restartGame() {
   // Enable checkHP again
   player.losing = false;
   opponent.losing = false;
-  starting.name = "";
-  // Restore the spell amounts
-  ////////////////////////////////////////////////////////////
+  starting = "";
+  // Restore the spell, counter-spell, and item amounts
+  // For the player
+  for (let i = 0; i < spells.length; i++) {
+    spells[i].amount = spells[i].initialAmount;
+  }
+  for (let i = 0; i < counterSpells.length; i++) {
+    counterSpells[i].amount = counterSpells[i].initialAmount;
+  }
+  for (let i = 0; i < items.length; i++) {
+    items[i].amount = items[i].initialAmount;
+  }
+  // For the opponent
+  for (let i = 0; i < spellBook.length; i++) {
+    spellBook[i].amount = spellBook[i].initialAmount;
+  }
 }
-
 
 //
 //
@@ -676,6 +690,8 @@ function createSpellBook() {
         function: dealDamage,
         agent: player
       }],
+      initialAmount: spells[0].initialAmount,
+      amount: spells[0].amount,
       isSpell: true,
       isCounterSpell: false,
       isItem: false
@@ -693,7 +709,8 @@ function createSpellBook() {
         function: reduceSpellAmount,
         agent: opponent
       }],
-      amount: 1,
+      initialAmount: spells[1].initialAmount,
+      amount: spells[1].amount,
       isSpell: true,
       isCounterSpell: false,
       isItem: false
@@ -710,7 +727,12 @@ function createSpellBook() {
       }, {
         function: heal,
         agent: opponent
+      }, {
+        function: reduceSpellAmount,
+        agent: opponent
       }],
+      initialAmount: counterSpells[0].initialAmount,
+      amount: counterSpells[0].amount,
       isSpell: false,
       isCounterSpell: true,
       isItem: false
@@ -725,6 +747,8 @@ function createSpellBook() {
         function: heal,
         agent: opponent
       }],
+      initialAmount: items[0].initialAmount,
+      amount: items[0].amount,
       isSpell: false,
       isCounterSpell: false,
       isItem: true
@@ -768,10 +792,10 @@ function reduceSpellAmount(agent) {
       $(`#${items[activeActionIndex].id}`).append(`<div class='content-info' id='infoI${activeActionIndex}'>&#9432;</div>`)
       $(`#infoI${activeActionIndex}`).append(`<div class="dropdown-info">${items[activeActionIndex].effects}</div>`);
     }
-    if (agent.name === "opponent") {
-      // Reduce one to the amount
-      opponent.spell.amount -= 1;
-    }
+  }
+  if (agent.name === "opponent") {
+    // Reduce one to the amount
+    opponent.spell.amount -= 1;
   }
 }
 
@@ -781,7 +805,7 @@ function reduceSpellAmount(agent) {
 // Deal damage to the opposing wizard
 function dealDamage(agent) {
   // Define the spell's damage
-  damageAmount = getRandomElement(spells[activeActionIndex].points).toFixed(1);
+  damageAmount = getRandomElement(spells[activeActionIndex].points);
   // Apply the damage
   agent.hp -= damageAmount;
   // Update the battery power of both wizards
@@ -800,7 +824,7 @@ function criticalDamage(agent) {
   if (randomNumber < spells[activeActionIndex].criticalChance) {
     // Deal the spell damage multiplied by the random critMultiplier value
     damageAmount = getRandomElement(spells[activeActionIndex].points) * getRandomElement(critMultiplier);
-    damageAmount = damageAmount.toFixed(1);
+    damageAmount = damageAmount;
     // Apply the damage to the opponent
     agent.hp -= damageAmount;
     // For the action recap crit is true
@@ -808,7 +832,7 @@ function criticalDamage(agent) {
   } else {
     // Deal the spell damage
     damageAmount = getRandomElement(spells[activeActionIndex].points);
-    damageAmount = damageAmount.toFixed(1);
+    damageAmount = damageAmount;
     // Apply the damage to the opponent
     agent.hp -= damageAmount;
   }
@@ -827,7 +851,7 @@ function heal(agent) {
   if (counterSpell === true) {
     // For antivirus
     if (counterSpells[activeActionIndex].antivirus === true) {
-      healAmount = damageAmount * counterSpells[activeActionIndex].healthMultiplier.toFixed(1);
+      healAmount = damageAmount * counterSpells[activeActionIndex].healthMultiplier;
     }
   } else if (item === true) {
     // Define spell's healing
