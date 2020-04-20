@@ -13,9 +13,10 @@ a limited quantity so a bit a strategy might be needed.
 
 *********************************************************************/
 
+// When the document is loaded call setup
 $(document).ready(setup);
 
-//
+// Determine the interval at which checking function must be called
 const CHECK_INTERVAL = 10;
 
 // Start value
@@ -858,7 +859,7 @@ function heal(agent) {
     healAmount = getRandomElement(items[activeActionIndex].points);
   }
   // Apply healing
-  agent.hp += healAmount;
+  agent.hp = parseFloat(agent.hp) + healAmount;
   // Update the battery power of both wizards
   updateBatteryPower();
   // Animate the life bar text of the player
