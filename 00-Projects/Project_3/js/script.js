@@ -44,8 +44,9 @@ let counterSpell = false;
 let item = false;
 
 // Array containing all spells
+let grimoire = [];
+let totalSpellBook = [];
 let offensiveSpellBook = [];
-let spellBook = [];
 let defensiveSpellBook = [];
 
 // Player and Opponent objects
@@ -56,7 +57,7 @@ let player = {
   losing: false
 }
 let opponent = {
-  hp: 100,
+  hp: 1,
   name: "opponent",
   wizardName: "",
   spell: "",
@@ -111,7 +112,8 @@ function dataLoaded(data) {
   // Display the all spells in the dropdown menus
   displaySpells();
   // Create an array that stores all the effects
-  createSpellBook();
+  createGrimoire();
+  createSpellBooks();
   // Start game
   startGame();
 }
@@ -348,7 +350,7 @@ function endPlayerRound() {
 
 // opponentRound
 //
-// Apply a random spell from the spellBook
+// Apply a random spell from the grimoire
 function opponentRound() {
   // Choose different spell books according to the battery level of the agents
   if (opponent.hp > 70) {
@@ -356,7 +358,7 @@ function opponentRound() {
     opponent.spell = getRandomElement(offensiveSpellBook);
   } else if (opponent.hp <= 70 && opponent.hp >= 10) {
     // Choose a random spell in the offensiveSpellBook
-    opponent.spell = getRandomElement(spellBook);
+    opponent.spell = getRandomElement(totalSpellBook);
   } else if (player.hp < 20) {
     opponent.spell = getRandomElement(offensiveSpellBook);
   } else if (opponent.hp < 10) {
@@ -560,7 +562,46 @@ function checkSpellAmount() {
     }
   }
   // FOR OPPONENT -> Check if it's amount is equal to 0
-  if (opponent.spell.amount === 0) {}
+  if (opponent.spell.amount === 0) {
+    // Remove it from the spell books
+    removeIndexOf(totalSpellBook, opponent.spell.id);
+    removeIndexOf(offensiveSpellBook, opponent.spell.id);
+    removeIndexOf(defensiveSpellBook, opponent.spell.id);
+  }
+}
+
+// removeIndexOf
+//
+// Remove an object from an array with its id
+function removeIndexOf(array, id) {
+  // Search through the array for the index of the corresponding id
+  for (let i = 0; i < array.length; i++) {
+    if (array[i].id === id) {
+      // remove this one
+      array.splice(i, 1);
+      // exit the loop
+      break;
+    }
+  }
+}
+
+// getIndexOf
+//
+// Get the index number of an element with its id
+function getIndexOf(array, id) {
+  // Define a variable
+  let index;
+  // Go through the array and find the matching id
+  for (let i = 0; i < array.length; i++) {
+    if (array[i].id === id) {
+      // Define the index of the matching object
+      index = i;
+      // exit the loop
+      break;
+    }
+  }
+  // return the index
+  return index;
 }
 
 // getRandomElement
@@ -664,9 +705,11 @@ function restartGame() {
     items[i].amount = items[i].initialAmount;
   }
   // For the opponent
-  for (let i = 0; i < spellBook.length; i++) {
-    spellBook[i].amount = spellBook[i].initialAmount;
+  for (let i = 0; i < grimoire.length; i++) {
+    grimoire[i].amount = grimoire[i].initialAmount;
   }
+  // Restore the spell books arrays
+  createSpellBooks();
 }
 
 //
@@ -675,13 +718,13 @@ function restartGame() {
 //
 //
 
-// createSpellBooks
+// createGrimoire
 //
 // An array in which all the spells are stored
 // Only used by opponent to get a random spell in its turn
-function createSpellBook() {
+function createGrimoire() {
   // Create a spell object for every spell
-  spellBook = [{
+  grimoire = [{
       // UNPLUG
       jsonIndex: 0,
       id: spells[0].id,
@@ -755,11 +798,23 @@ function createSpellBook() {
       isItem: true
     }
   ];
-  // More specific spellBooks
+}
+
+// createSpellBooks
+//
+// Divide the grimoire into specific books
+function createSpellBooks() {
+  // For all spells
+  totalSpellBook = [grimoire[getIndexOf(grimoire, "unplug")],
+    grimoire[getIndexOf(grimoire, "saturate")], grimoire[getIndexOf(grimoire, "antivirus")],
+    grimoire[getIndexOf(grimoire, "generator")]
+  ];
   // For damage spells
-  offensiveSpellBook = [spellBook[0], spellBook[1]];
+  offensiveSpellBook = [grimoire[getIndexOf(grimoire, "unplug")], grimoire[getIndexOf(grimoire, "saturate")]];
   // For healing spells
-  defensiveSpellBook = [spellBook[2], spellBook[3]];
+  defensiveSpellBook = [grimoire[getIndexOf(grimoire, "antivirus")],
+    grimoire[getIndexOf(grimoire, "generator")]
+  ];;
 }
 
 // reduceSpellAmount
