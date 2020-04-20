@@ -57,7 +57,7 @@ let player = {
   losing: false
 }
 let opponent = {
-  hp: 1,
+  hp: 100,
   name: "opponent",
   wizardName: "",
   spell: "",
